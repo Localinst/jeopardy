@@ -185,11 +185,7 @@ const QuestionModal: React.FC<QuestionModalProps> = ({
                   {question.text}
                 </div>
                 
-                {question.type && (
-                  <div className="text-xs text-blue-300 mt-2 bg-blue-800 p-2 rounded">
-                    {getTypeDescription()}
-                  </div>
-                )}
+               
               </div>
 
               {showAnswer ? (
