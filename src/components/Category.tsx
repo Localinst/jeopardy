@@ -23,7 +23,7 @@ const Category: React.FC<CategoryProps> = ({
 
   return (
     <div className="flex flex-col h-full">
-      <div className="bg-blue-950 text-yellow-400 p-3 rounded-t-md mb-2 text-center font-bold">
+      <div className="bg-blue-950 text-yellow-400 p-3 text-center font-bold border-b border-blue-800">
         {isEditMode ? (
           <input
             type="text"
@@ -35,7 +35,7 @@ const Category: React.FC<CategoryProps> = ({
           <h3 className="text-sm md:text-lg uppercase">{category.title}</h3>
         )}
       </div>
-      <div className="flex-1 flex flex-col gap-2">
+      <div className="flex-1 flex flex-col divide-y divide-blue-800">
         {category.questions
           .sort((a, b) => a.points - b.points)
           .map((question: Question) => (

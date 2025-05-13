@@ -54,7 +54,7 @@ const GameBoard: React.FC<GameBoardProps> = ({
 
   return (
     <div className="w-full h-full">
-      <div className="grid grid-cols-5 gap-2 h-full">
+      <div className="grid grid-cols-5 h-full border border-blue-800 divide-x divide-blue-800">
         {categories.map(category => (
           <Category
             key={category.id}
