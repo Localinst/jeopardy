@@ -111,7 +111,7 @@ const useGameState = () => {
 
     const pointChange = isCorrect 
       ? gameState.selectedQuestion.points 
-      : 0; // Non sottraiamo punti per risposte errate quando si gioca in squadre
+      : -gameState.selectedQuestion.points; // Sottrai punti per risposte errate
 
     const updatedCategories = gameState.categories.map(category => {
       if (category.id === gameState.selectedCategory?.id) {
@@ -130,14 +130,11 @@ const useGameState = () => {
 
     // Aggiorna il punteggio della squadra corrente
     const updatedTeams = [...gameState.teams];
-    if (isCorrect) {
-      updatedTeams[gameState.currentTeamIndex].score += pointChange;
-    }
+    // Applica la modifica di punteggio (positiva o negativa)
+    updatedTeams[gameState.currentTeamIndex].score += pointChange;
 
-    // Passa al turno successivo solo se la risposta è sbagliata
-    const nextTeamIndex = isCorrect 
-      ? gameState.currentTeamIndex 
-      : (gameState.currentTeamIndex + 1) % gameState.teams.length;
+    // Passa sempre al turno della squadra successiva
+    const nextTeamIndex = (gameState.currentTeamIndex + 1) % gameState.teams.length;
 
     setGameState({
       ...gameState,
