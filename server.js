@@ -33,10 +33,14 @@ console.log('CORS configurato per:', corsOptions.origin.join(', '));
 
 // Configura un pool di API key
 const API_KEYS = [
-  process.env.OPENROUTER_API_KEY ,
-  process.env.OPENROUTER_API_KEY_2  ,
-  process.env.OPENROUTER_API_KEY_3 
-];
+  process.env.OPENROUTER_API_KEY,
+  process.env.OPENROUTER_API_KEY_2,
+  process.env.OPENROUTER_API_KEY_3
+].filter(key => key && key.trim() !== ''); // Filtra le chiavi undefined o vuote
+
+if (API_KEYS.length === 0) {
+  console.error('ATTENZIONE: Nessuna API key valida trovata nelle variabili d\'ambiente. Il servizio non funzionerà!');
+}
 
 // Stato di ogni API key (true = funzionante, false = non funzionante)
 const apiKeyStatus = API_KEYS.map(() => true);
@@ -46,6 +50,12 @@ let currentKeyIndex = 0;
 
 // Funzione per ottenere la prossima API key funzionante
 const getNextWorkingApiKey = () => {
+  // Verifica se ci sono API key disponibili
+  if (API_KEYS.length === 0) {
+    console.error('Nessuna API key disponibile!');
+    return { key: null, index: -1 };
+  }
+  
   // Verifica se c'è almeno una chiave funzionante
   if (!apiKeyStatus.some(status => status)) {
     console.log('Tutte le API key sembrano non funzionare. Resettiamo lo stato e riproviamo.');
@@ -75,9 +85,19 @@ const getNextWorkingApiKey = () => {
 
 // Stampa informazioni sulle API key disponibili
 console.log(`Pool di ${API_KEYS.length} API key disponibili`);
+// Stampa solo i primi caratteri di ogni chiave per verifica
+API_KEYS.forEach((key, index) => {
+  if (key) {
+    console.log(`API Key ${index+1} (primi 10 caratteri): ${key.substring(0, 10)}...`);
+  }
+});
 
 // Utilizza la variabile d'ambiente per la chiave API di OpenRouter
-console.log('OpenRouter API Token iniziale (primi 10 caratteri):', API_KEYS[0].substring(0, 10) + '...');
+if (API_KEYS.length > 0 && API_KEYS[0]) {
+  console.log('OpenRouter API Token iniziale (primi 10 caratteri):', API_KEYS[0].substring(0, 10) + '...');
+} else {
+  console.error('ATTENZIONE: API Token iniziale non disponibile o non valido!');
+}
 
 // Endpoint per mantenere il server sveglio attraverso cron job
 app.get('/ping', (req, res) => {
@@ -92,6 +112,14 @@ app.get('/ping', (req, res) => {
 
 app.post('/generate-quiz', async (req, res) => {
   const { categories } = req.body; // array da 5 categorie
+
+  // Verifica se ci sono categorie valide
+  if (!categories || !Array.isArray(categories) || categories.length === 0) {
+    return res.status(400).json({
+      error: 'Categorie non valide',
+      message: 'Devi fornire un array di categorie'
+    });
+  }
 
   const prompt = `
 L'utente ha inserito le seguenti 5 categorie per un quiz in stile Jeopardy!: ${categories.join(", ")}.
@@ -115,6 +143,12 @@ Restituisci il risultato in formato JSON, con questa struttura esatta:
 }
 `;
 
+  // Verifica se ci sono API key disponibili
+  if (API_KEYS.length === 0) {
+    console.error('Nessuna API key disponibile. Restituisco categorie di fallback');
+    return res.json(generateFallbackData(categories));
+  }
+
   // Inizia con la prima API key disponibile
   let apiKeyInfo = getNextWorkingApiKey();
   let attempts = 0;
@@ -122,12 +156,18 @@ Restituisci il risultato in formato JSON, con questa struttura esatta:
   
   while (attempts < maxAttempts) {
     try {
+      // Verifica se abbiamo una chiave valida
+      if (!apiKeyInfo.key) {
+        console.error('API key non valida. Passaggio al fallback.');
+        break;
+      }
+
       // Utilizziamo OpenRouter API con gli header corretti
       console.log(`Tentativo ${attempts+1}/${maxAttempts} con API Key ${apiKeyInfo.index+1}`);
       
       const headers = {
         "Authorization": `Bearer ${apiKeyInfo.key}`,
-        "HTTP-Referer": "https://jeopard.netlify.app",
+        "HTTP-Referer": "https://jeopardy-b937.onrender.com",
         "X-Title": "Jeopardy Quiz App",
         "Content-Type": "application/json"
       };
@@ -136,7 +176,7 @@ Restituisci il risultato in formato JSON, con questa struttura esatta:
       console.log('Header Authorization (primi 20 caratteri):', headers.Authorization.substring(0, 20) + '...');
       
       const requestBody = {
-        "model": "deepseek/deepseek-r1:free", // Modello gratuito di OpenRouter
+        "model": "deepseek/deepseek-r1-zero:free", // Modello gratuito di OpenRouter
         "messages": [
           {
             "role": "system",
@@ -191,22 +231,7 @@ Restituisci il risultato in formato JSON, con questa struttura esatta:
         }
       } catch (parseError) {
         console.error('Errore nel parsing della risposta:', parseError.message);
-        
-        // Se non riusciamo a estrarre JSON valido, creiamo un formato di fallback
-        parsedData = {
-          categories: categories.map((categoryName) => {
-            return {
-              title: categoryName,
-              questions: [100, 200, 300, 400, 500].map(points => {
-                return {
-                  points,
-                  text: `Domanda di esempio per ${categoryName} da ${points} punti`,
-                  answer: `Risposta di esempio per ${categoryName}`
-                };
-              })
-            };
-          })
-        };
+        throw new Error('Errore nel parsing della risposta JSON');
       }
 
       res.json(parsedData);
@@ -215,7 +240,7 @@ Restituisci il risultato in formato JSON, con questa struttura esatta:
       console.error(`Errore con API Key ${apiKeyInfo.index+1}:`, error.response?.data || error.message);
       
       if (error.response?.status === 401) {
-        console.error('ERRORE DI AUTENTICAZIONE: La chiave API potrebbe non essere invalida.');
+        console.error('ERRORE DI AUTENTICAZIONE: La chiave API potrebbe non essere valida.');
         // Segna questa chiave come non funzionante
         apiKeyStatus[apiKeyInfo.index] = false;
       }
@@ -234,7 +259,12 @@ Restituisci il risultato in formato JSON, con questa struttura esatta:
   
   // Tutte le API key hanno fallito, restituisci categorie di fallback
   console.error('Tutte le API key hanno fallito, restituisco categorie di fallback');
-  const fallbackData = {
+  res.json(generateFallbackData(categories));
+});
+
+// Funzione per generare dati di fallback
+function generateFallbackData(categories) {
+  return {
     categories: categories.map((categoryName) => {
       return {
         title: categoryName,
@@ -248,9 +278,7 @@ Restituisci il risultato in formato JSON, con questa struttura esatta:
       };
     })
   };
-  
-  res.json(fallbackData);
-});
+}
 
 // Gestione errore per JSON malformato
 app.use((err, req, res, next) => {
