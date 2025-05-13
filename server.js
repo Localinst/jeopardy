@@ -18,7 +18,7 @@ const app = express();
 
 // Configura CORS in modo più permissivo
 const corsOptions = {
-  origin: ['https://jeopard.netlify.app', 'http://localhost:5173', 'http://localhost:3000', 'http://localhost:5174'],
+  origin: ['https://jeopard.netlify.app', 'http://localhost:5173', 'http://localhost:3000', 'http://localhost:5174','https://jeopardy-b937.onrender.com/generate-quiz'],
   methods: ['GET', 'POST'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
