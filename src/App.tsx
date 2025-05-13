@@ -64,8 +64,8 @@ function App() {
 
   // Render il gioco
   return (
-    <div className="max-h-screen bg-gradient-to-b from-blue-950 to-blue-900 text-white">
-      <div className="container mx-auto px-4 py-8">
+    <div className="min-h-screen bg-gradient-to-b from-blue-950 to-blue-900 text-white">
+      <div className="container mx-auto px-4 py-8 pb-24">
         {/* Header */}
         <header className="mb-8 text-center">
           <div className="flex items-center justify-center mb-2">
@@ -131,7 +131,7 @@ function App() {
         )}
 
         {/* Game Board */}
-        <div className="aspect-[5/3] w-full">
+        <div className="w-full" style={{ minHeight: '600px', height: 'auto' }}>
           <GameBoard
             categories={categories}
             onSelectQuestion={selectQuestion}
@@ -147,7 +147,9 @@ function App() {
         </div>
 
         {/* Instructions */}
-        <GameControls
+        
+      </div>
+      <GameControls
           score={totalScore}
           isEditMode={isEditMode}
           onToggleEditMode={toggleEditMode}
@@ -157,7 +159,6 @@ function App() {
           onBackToLanding={backToLanding}
           onConfigureTeams={backToTeamSetup}
         />
-      </div>
     </div>
   );
 }
