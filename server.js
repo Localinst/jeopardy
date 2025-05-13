@@ -15,8 +15,32 @@ const __dirname = dirname(__filename);
 dotenv.config();
 
 const app = express();
-app.use(cors());
+
+// Configura CORS in modo più permissivo
+const corsOptions = {
+  origin: ['https://jeopard.netlify.app', 'http://localhost:5173', 'http://localhost:3000'],
+  methods: ['GET', 'POST'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
+  optionsSuccessStatus: 200
+};
+
+app.use(cors(corsOptions));
 app.use(bodyParser.json());
+
+// Log informativo all'avvio del server
+console.log('CORS configurato per:', corsOptions.origin.join(', '));
+
+// Rotta di test per verificare che il server risponda correttamente
+app.get('/health', (req, res) => {
+  res.json({
+    status: 'ok',
+    message: 'Il server è attivo e funzionante',
+    timestamp: new Date().toISOString(),
+    corsEnabled: true,
+    origins: corsOptions.origin
+  });
+});
 
 // Utilizza la variabile d'ambiente per la chiave API di OpenRouter
 const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY || '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';
@@ -165,6 +189,17 @@ Restituisci il risultato in formato JSON, con questa struttura esatta:
     
     res.json(fallbackData);
   }
+});
+
+// Gestione errore per JSON malformato
+app.use((err, req, res, next) => {
+  if (err instanceof SyntaxError && err.status === 400 && 'body' in err) {
+    return res.status(400).json({ 
+      error: 'JSON malformato',
+      message: err.message 
+    });
+  }
+  next();
 });
 
 const PORT = process.env.PORT || 3001;
