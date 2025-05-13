@@ -124,7 +124,7 @@ app.post('/generate-quiz', async (req, res) => {
   const prompt = `
 L'utente ha inserito le seguenti 5 categorie per un quiz in stile Jeopardy!: ${categories.join(", ")}.
 Genera un quiz Jeopardy con queste 5 categorie. Ogni categoria deve contenere 5 domande, ciascuna con punteggi da 100 a 500.
-Le domande da 100 devono essere facili, quelle da 500 molto difficili.
+Le domande da 100 devono essere facili, quelle da 500 molto difficili. Includi domande con risposta aperta, domande con risposta chiusa e domande con risposta un numero.
 
 IMPORTANTE: Restituisci SOLO un oggetto JSON valido, senza comandi LaTeX o markdown, con questa struttura esatta:
 {

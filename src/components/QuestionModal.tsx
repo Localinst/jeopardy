@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Question, Category, Team } from '../types';
 
 interface QuestionModalProps {
@@ -28,16 +28,61 @@ const QuestionModal: React.FC<QuestionModalProps> = ({
   const [editedQuestion, setEditedQuestion] = useState<Partial<Question>>(
     question || { text: '', answer: '', points: 100, type: 'secca' }
   );
+  const [timeLeft, setTimeLeft] = useState(60); // 60 secondi = 1 minuto
+  const [timerActive, setTimerActive] = useState(true);
+
+  // Effetto per gestire il timer
+  useEffect(() => {
+    if (isEditMode || !timerActive) return;
+
+    const timer = setInterval(() => {
+      setTimeLeft(prevTime => {
+        if (prevTime <= 1) {
+          clearInterval(timer);
+          // Tempo scaduto, contrassegna la risposta come errata
+          if (!showAnswer) {
+            handleTimeUp();
+          }
+          return 0;
+        }
+        return prevTime - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [timerActive, isEditMode, showAnswer]);
+
+  // Reset timer quando si apre una nuova domanda
+  useEffect(() => {
+    if (!isEditMode) {
+      setTimeLeft(60);
+      setTimerActive(true);
+    }
+  }, [question, isEditMode]);
 
   if (!question || !category) return null;
 
   const handleShowAnswer = () => {
     setShowAnswer(true);
+    setTimerActive(false); // Ferma il timer quando si mostra la risposta
   };
 
   const handleAnswer = (isCorrect: boolean) => {
     onAnswer(isCorrect);
     setShowAnswer(false);
+    setTimerActive(false);
+  };
+
+  const handleTimeUp = () => {
+    // Tempo scaduto, mostra la risposta e poi contrassegna come errata
+    setShowAnswer(true);
+    setTimerActive(false);
+    
+    // Piccolo ritardo per mostrare la risposta prima di chiudere
+    setTimeout(() => {
+      onAnswer(false);
+      setShowAnswer(false);
+    }, 1500);
   };
 
   const handleSave = () => {
@@ -53,6 +98,20 @@ const QuestionModal: React.FC<QuestionModalProps> = ({
       ...editedQuestion,
       [name]: name === 'points' ? parseInt(value, 10) : value,
     });
+  };
+
+  // Formatta il tempo in MM:SS
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+  };
+
+  // Determina il colore del timer in base al tempo rimanente
+  const getTimerColor = () => {
+    if (timeLeft > 30) return 'text-green-500';
+    if (timeLeft > 10) return 'text-yellow-500';
+    return 'text-red-500';
   };
 
   // Determina il messaggio in base al tipo di domanda
@@ -176,6 +235,11 @@ const QuestionModal: React.FC<QuestionModalProps> = ({
                   </span>
                 </div>
               )}
+              
+              {/* Timer display */}
+              <div className={`text-center mb-2 font-bold text-xl ${getTimerColor()}`}>
+                Tempo: {formatTime(timeLeft)}
+              </div>
               
               <div className="text-center mb-6">
                 <h3 className="text-xl font-bold text-yellow-400 mb-2">
