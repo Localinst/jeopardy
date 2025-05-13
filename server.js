@@ -125,7 +125,8 @@ app.post('/generate-quiz', async (req, res) => {
 L'utente ha inserito le seguenti 5 categorie per un quiz in stile Jeopardy!: ${categories.join(", ")}.
 Genera un quiz Jeopardy con queste 5 categorie. Ogni categoria deve contenere 5 domande, ciascuna con punteggi da 100 a 500.
 Le domande da 100 devono essere facili, quelle da 500 molto difficili.
-Restituisci il risultato in formato JSON, con questa struttura esatta:
+
+IMPORTANTE: Restituisci SOLO un oggetto JSON valido, senza comandi LaTeX o markdown, con questa struttura esatta:
 {
   "categories": [
     {
@@ -180,7 +181,7 @@ Restituisci il risultato in formato JSON, con questa struttura esatta:
         "messages": [
           {
             "role": "system",
-            "content": "Sei un assistente specializzato nella creazione di quiz in stile Jeopardy. Rispondi solo con JSON valido."
+            "content": "Sei un assistente specializzato nella creazione di quiz in stile Jeopardy. Rispondi SOLO con JSON valido, senza formattazione LaTeX o Markdown. Non aggiungere decorazioni o spiegazioni al JSON."
           },
           {
             "role": "user",
@@ -217,20 +218,44 @@ Restituisci il risultato in formato JSON, con questa struttura esatta:
       // Estrae il JSON dalla risposta
       let parsedData;
       try {
-        // Cerca di trovare la struttura JSON nella risposta
-        const jsonMatch = generatedText.match(/\{[\s\S]*\}/);
+        // Log per diagnostica
+        console.log('Testo generato:', generatedText.substring(0, 100) + '...');
+        
+        // Cerca di trovare la struttura JSON nella risposta, gestendo anche casi con \boxed{} e altri pattern
+        let jsonText = generatedText;
+        
+        // Rimuove eventuali comandi LaTeX come \boxed{} dal testo
+        if (jsonText.includes('\\boxed{')) {
+          console.log('Rilevato comando LaTeX \\boxed{}, pulizia in corso...');
+          jsonText = jsonText.replace('\\boxed{', '').replace(/}$/, '');
+        }
+        
+        // Cerca di trovare la struttura JSON completa nella risposta
+        const jsonMatch = jsonText.match(/\{[\s\S]*\}/);
         if (jsonMatch) {
-          parsedData = JSON.parse(jsonMatch[0]);
+          try {
+            parsedData = JSON.parse(jsonMatch[0]);
+            console.log('JSON estratto con successo tramite pattern matching');
+          } catch (innerError) {
+            console.error('Errore nel parsing del JSON estratto:', innerError.message);
+            // Tenta un'ulteriore pulizia del testo
+            const cleanedJson = jsonMatch[0].replace(/```json|```/g, '').trim();
+            parsedData = JSON.parse(cleanedJson);
+          }
         } else {
           try {
             // Prova a parsare direttamente la risposta come JSON
-            parsedData = JSON.parse(generatedText.trim());
+            parsedData = JSON.parse(jsonText.trim());
+            console.log('JSON estratto con successo tramite parsing diretto');
           } catch (error) {
+            console.error('Formato JSON non trovato nella risposta:', error.message);
             throw new Error('Formato JSON non trovato nella risposta');
           }
         }
       } catch (parseError) {
         console.error('Errore nel parsing della risposta:', parseError.message);
+        // Logga i primi 300 caratteri del testo ricevuto per debug
+        console.error('Primi 300 caratteri della risposta problematica:', generatedText.substring(0, 300));
         throw new Error('Errore nel parsing della risposta JSON');
       }
 
