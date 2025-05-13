@@ -64,7 +64,7 @@ function App() {
 
   // Render il gioco
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-950 to-blue-900 text-white">
+    <div className="max-h-screen bg-gradient-to-b from-blue-950 to-blue-900 text-white">
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <header className="mb-8 text-center">
@@ -76,16 +76,7 @@ function App() {
         </header>
 
         {/* Game Controls */}
-        <GameControls
-          score={totalScore}
-          isEditMode={isEditMode}
-          onToggleEditMode={toggleEditMode}
-          onResetGame={resetGame}
-          onResetScore={resetScore}
-          onCreateNewGame={createNewGame}
-          onBackToLanding={backToLanding}
-          onConfigureTeams={backToTeamSetup}
-        />
+        
 
         {/* Team Information */}
         {!isEditMode && teams && Array.isArray(teams) && teams.length > 0 && (
@@ -156,14 +147,16 @@ function App() {
         </div>
 
         {/* Instructions */}
-        <div className="mt-8 text-center text-blue-300 text-sm">
-          <p>
-            {isEditMode 
-              ? 'Clicca su una casella per modificare una domanda. Clicca sul titolo di una categoria per modificarlo.'
-              : `Turno di: ${currentTeam.name} - Clicca su una casella per rispondere a una domanda.`}
-          </p>
-          <p className="mt-2">Usa il pulsante "Modifica Domande" per personalizzare categorie e domande.</p>
-        </div>
+        <GameControls
+          score={totalScore}
+          isEditMode={isEditMode}
+          onToggleEditMode={toggleEditMode}
+          onResetGame={resetGame}
+          onResetScore={resetScore}
+          onCreateNewGame={createNewGame}
+          onBackToLanding={backToLanding}
+          onConfigureTeams={backToTeamSetup}
+        />
       </div>
     </div>
   );
