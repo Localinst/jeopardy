@@ -21,6 +21,9 @@ app.use(bodyParser.json());
 // Utilizza la variabile d'ambiente per la chiave API di OpenRouter
 const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY || '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';
 console.log('OpenRouter API Token presente:', OPENROUTER_API_KEY ? 'Sì' : 'No');
+console.log('OpenRouter API Token (primi 10 caratteri):', OPENROUTER_API_KEY ? OPENROUTER_API_KEY.substring(0, 10) + '...' : 'Nessuna chiave');
+console.log('Lunghezza token:', OPENROUTER_API_KEY ? OPENROUTER_API_KEY.length : 0);
+console.log('Variabili d\'ambiente disponibili:', Object.keys(process.env).join(', '));
 
 app.post('/generate-quiz', async (req, res) => {
   const { categories } = req.body; // array da 5 categorie
@@ -59,6 +62,7 @@ Restituisci il risultato in formato JSON, con questa struttura esatta:
     };
     
     console.log('Headers configurati:', Object.keys(headers).join(', '));
+    console.log('Header Authorization (primi 20 caratteri):', headers.Authorization.substring(0, 20) + '...');
     
     const requestBody = {
       "model": "deepseek/deepseek-r1:free", // Modello gratuito di OpenRouter
@@ -75,6 +79,7 @@ Restituisci il risultato in formato JSON, con questa struttura esatta:
     };
     
     console.log('Corpo richiesta preparato');
+    console.log('Modello utilizzato:', requestBody.model);
     console.log('Invio richiesta a OpenRouter...');
     
     const response = await axios.post(
@@ -133,6 +138,14 @@ Restituisci il risultato in formato JSON, con questa struttura esatta:
     res.json(parsedData);
   } catch (error) {
     console.error('Errore nella chiamata a OpenRouter API:', error.response?.data || error.message);
+    console.error('Codice di stato:', error.response?.status || 'N/A');
+    console.error('Dettagli errore:', JSON.stringify(error.response?.data || {}, null, 2));
+    console.error('Stack trace:', error.stack || 'N/A');
+    
+    if (error.response?.status === 401) {
+      console.error('ERRORE DI AUTENTICAZIONE: La chiave API potrebbe non essere valida o mancante.');
+      console.error('Controlla che la variabile d\'ambiente OPENROUTER_API_KEY sia impostata correttamente su Render.');
+    }
     
     // In caso di errore, restituisce categorie di fallback
     const fallbackData = {
@@ -156,5 +169,5 @@ Restituisci il risultato in formato JSON, con questa struttura esatta:
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
-  console.log(`Server avviato su http://localhost:${PORT}`);
+  console.log(`Server avviato sulla porta ${PORT}`);
 }); 
