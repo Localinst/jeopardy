@@ -75,12 +75,20 @@ const getNextWorkingApiKey = () => {
 
 // Stampa informazioni sulle API key disponibili
 console.log(`Pool di ${API_KEYS.length} API key disponibili`);
-API_KEYS.forEach((key, index) => {
-  console.log(`API Key ${index+1} (primi 10 caratteri): ${key.substring(0, 10)}...`);
-});
 
 // Utilizza la variabile d'ambiente per la chiave API di OpenRouter
 console.log('OpenRouter API Token iniziale (primi 10 caratteri):', API_KEYS[0].substring(0, 10) + '...');
+
+// Endpoint per mantenere il server sveglio attraverso cron job
+app.get('/ping', (req, res) => {
+  const timestamp = new Date().toISOString();
+  console.log(`Ping ricevuto alle ${timestamp}`);
+  res.status(200).json({ 
+    status: 'online', 
+    timestamp: timestamp,
+    message: 'Il server è attivo'
+  });
+});
 
 app.post('/generate-quiz', async (req, res) => {
   const { categories } = req.body; // array da 5 categorie
