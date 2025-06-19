@@ -177,7 +177,7 @@ IMPORTANTE: Restituisci SOLO un oggetto JSON valido, senza comandi LaTeX o markd
       console.log('Header Authorization (primi 20 caratteri):', headers.Authorization.substring(0, 20) + '...');
       
       const requestBody = {
-        "model": "deepseek/deepseek-r1-zero:free", // Modello gratuito di OpenRouter
+        "model": "meta-llama/llama-3.3-8b-instruct:free", // Modello gratuito di OpenRouter
         "messages": [
           {
             "role": "system",
