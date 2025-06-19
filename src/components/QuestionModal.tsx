@@ -273,6 +273,14 @@ const QuestionModal: React.FC<QuestionModalProps> = ({
                       Corretta
                     </button>
                   </div>
+                  <div className="flex justify-center mt-4">
+                    <button
+                      onClick={() => window.open(`https://www.google.com/search?q=${encodeURIComponent(question.text)}`, '_blank')}
+                      className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-500 transition"
+                    >
+                      Verifica online
+                    </button>
+                  </div>
                 </div>
               ) : (
                 <div className="flex justify-center mt-8">

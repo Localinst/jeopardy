@@ -124,7 +124,16 @@ app.post('/generate-quiz', async (req, res) => {
   const prompt = `
 L'utente ha inserito le seguenti 5 categorie per un quiz in stile Jeopardy!: ${categories.join(", ")}.
 Genera un quiz Jeopardy con queste 5 categorie. Ogni categoria deve contenere 5 domande, ciascuna con punteggi da 100 a 500.
-Le domande da 100 devono essere facili, quelle da 500 molto difficili. Includi domande con risposta aperta, domande con risposta chiusa e domande con risposta un numero.
+Le domande da 100 devono essere facili, quelle da 500 molto difficili.
+
+Per ogni categoria, crea domande con modalità diverse, alternando tra:
+- Domande a risposta aperta (es: "Spiega in poche parole...")
+- Domande a risposta chiusa (es: "Qual è...", "Chi ha fatto...")
+- Domande numeriche (es: "Quanti sono...", "In che anno...")
+- Domande con tolleranza numerica (es: "Rispondi con un numero, accetto uno scarto di +/- 2")
+- Domande vero/falso
+
+Evita di ripetere la stessa struttura di domanda all'interno della stessa categoria. Il tono delle domande deve essere sia serio che divertente.
 
 IMPORTANTE: Restituisci SOLO un oggetto JSON valido, senza comandi LaTeX o markdown, con questa struttura esatta:
 {
@@ -181,7 +190,7 @@ IMPORTANTE: Restituisci SOLO un oggetto JSON valido, senza comandi LaTeX o markd
         "messages": [
           {
             "role": "system",
-            "content": "Sei un assistente specializzato nella creazione di quiz in stile Jeopardy. Rispondi SOLO con JSON valido, senza formattazione LaTeX o Markdown. Non aggiungere decorazioni o spiegazioni al JSON."
+            "content": "Sei un assistente specializzato nella creazione di quiz in stile Jeopardy in italiano. Rispondi SOLO con JSON valido, senza formattazione LaTeX o Markdown. Non aggiungere decorazioni o spiegazioni al JSON."
           },
           {
             "role": "user",
