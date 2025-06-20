@@ -126,6 +126,10 @@ L'utente ha inserito le seguenti 5 categorie per un quiz in stile Jeopardy!: ${c
 Genera un quiz Jeopardy con queste 5 categorie. Ogni categoria deve contenere 5 domande, ciascuna con punteggi da 100 a 500.
 Le domande da 100 devono essere facili, quelle da 500 molto difficili.
 
+REGOLE IMPORTANTI:
+1. Le risposte NON devono essere contenute nelle domande
+2. Ogni domanda deve avere una sola risposta corretta e non ambigua
+
 IMPORTANTE: Restituisci SOLO un oggetto JSON valido, senza comandi LaTeX o markdown, con questa struttura esatta:
 {
   "categories": [
