@@ -126,13 +126,15 @@ L'utente ha inserito le seguenti 5 categorie per un quiz in stile Jeopardy!: ${c
 Genera un quiz Jeopardy con queste 5 categorie. Ogni categoria deve contenere 5 domande, ciascuna con punteggi da 100 a 500.
 Le domande da 100 devono essere facili, quelle da 500 molto difficili.
 
-REGOLE IMPORTANTI:
+REGOLE IMPORTANTI PER LA CREAZIONE DI UN QUIZ EFFICACE:
 1. Le risposte NON devono essere contenute nelle domande
-2. Le domande devono essere formulate come AFFERMAZIONI o INDIZI, mai come domande dirette (in stile Jeopardy)
-3. Le risposte devono essere concise (preferibilmente 1-5 parole)
+2. Le domande DEVONO essere formulate come VERE DOMANDE con punto interrogativo (es: "Quale campionato di calcio si svolge ogni 4 anni?")
+3. Le risposte devono essere concise (preferibilmente 1-5 parole) e precise
 4. Ogni domanda deve avere una sola risposta corretta e non ambigua
-5. Le domande devono essere precise e accurate dal punto di vista storico, scientifico e culturale
+5. Le domande e risposte devono essere precise e accurate dal punto di vista storico, scientifico e culturale
 6. Evita domande con risposte ovvie o banali
+7. Verifica attentamente la correttezza di ogni informazione prima di includerla
+8. Assicurati che le domande siano chiare e dirette, senza ambiguità
 
 IMPORTANTE: Restituisci SOLO un oggetto JSON valido, senza comandi LaTeX o markdown, con questa struttura esatta:
 {
@@ -189,7 +191,7 @@ IMPORTANTE: Restituisci SOLO un oggetto JSON valido, senza comandi LaTeX o markd
         "messages": [
           {
             "role": "system",
-            "content": "Sei un esperto nella creazione di quiz in stile Jeopardy in italiano. In Jeopardy, le domande sono formulate come affermazioni e gli indizi non contengono mai la risposta. Sei molto preciso e verifichi l'accuratezza delle informazioni. Rispondi SOLO con JSON valido, senza formattazione LaTeX o Markdown. Non aggiungere decorazioni o spiegazioni al JSON."
+            "content": "Sei un esperto nella creazione di quiz interattivi in italiano. Crea domande dirette e chiare che richiedono risposte specifiche. Le domande devono essere formulate come vere domande (con punto interrogativo) e non come affermazioni. Ad esempio: 'Quale campionato di calcio si svolge ogni 4 anni?' invece di 'Campionato di calcio che si svolge ogni 4 anni'. Le risposte devono essere brevi, precise e storicamente/scientificamente accurate. Verifica attentamente ogni informazione prima di includerla. Rispondi SOLO con JSON valido, senza formattazione LaTeX o Markdown."
           },
           {
             "role": "user",
