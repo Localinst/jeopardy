@@ -128,7 +128,11 @@ Le domande da 100 devono essere facili, quelle da 500 molto difficili.
 
 REGOLE IMPORTANTI:
 1. Le risposte NON devono essere contenute nelle domande
-2. Ogni domanda deve avere una sola risposta corretta e non ambigua
+2. Le domande devono essere formulate come AFFERMAZIONI o INDIZI, mai come domande dirette (in stile Jeopardy)
+3. Le risposte devono essere concise (preferibilmente 1-5 parole)
+4. Ogni domanda deve avere una sola risposta corretta e non ambigua
+5. Le domande devono essere precise e accurate dal punto di vista storico, scientifico e culturale
+6. Evita domande con risposte ovvie o banali
 
 IMPORTANTE: Restituisci SOLO un oggetto JSON valido, senza comandi LaTeX o markdown, con questa struttura esatta:
 {
@@ -185,7 +189,7 @@ IMPORTANTE: Restituisci SOLO un oggetto JSON valido, senza comandi LaTeX o markd
         "messages": [
           {
             "role": "system",
-            "content": "Sei un assistente specializzato nella creazione di quiz in stile Jeopardy in italiano. Rispondi SOLO con JSON valido, senza formattazione LaTeX o Markdown. Non aggiungere decorazioni o spiegazioni al JSON."
+            "content": "Sei un esperto nella creazione di quiz in stile Jeopardy in italiano. In Jeopardy, le domande sono formulate come affermazioni e gli indizi non contengono mai la risposta. Sei molto preciso e verifichi l'accuratezza delle informazioni. Rispondi SOLO con JSON valido, senza formattazione LaTeX o Markdown. Non aggiungere decorazioni o spiegazioni al JSON."
           },
           {
             "role": "user",
