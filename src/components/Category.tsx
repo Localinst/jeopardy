@@ -47,6 +47,7 @@ const Category: React.FC<CategoryProps> = ({
                 isEditMode={isEditMode}
                 onEdit={onEditQuestion}
               />
+              
             </div>
           ))}
       </div>

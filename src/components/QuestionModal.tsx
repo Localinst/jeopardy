@@ -30,7 +30,24 @@ const QuestionModal: React.FC<QuestionModalProps> = ({
   );
   const [timeLeft, setTimeLeft] = useState(60); // 60 secondi = 1 minuto
   const [timerActive, setTimerActive] = useState(true);
-
+  const handleCorrect = () => {
+  if (window.gtag) {
+    window.gtag('event', 'risposta_corretta', {
+      event_category: 'Quiz',
+      event_label: 'Risposta corretta'
+     
+    });
+    console.log('connessione con gtag')
+    console.log(window.gtag)
+  }}
+  const handleSbagliata = () => {
+  if (window.gtag) {
+    window.gtag('event', 'risposta_sbagliata', {
+      event_category: 'Quiz',
+      event_label: 'Risposta sbagliata'
+     
+    });
+  }}
   // Effetto per gestire il timer
   useEffect(() => {
     if (isEditMode || !timerActive) return;
@@ -69,6 +86,10 @@ const QuestionModal: React.FC<QuestionModalProps> = ({
 
   const handleAnswer = (isCorrect: boolean) => {
     onAnswer(isCorrect);
+    if (isCorrect) {
+      handleCorrect();
+    } else {
+      handleSbagliata()}
     setShowAnswer(false);
     setTimerActive(false);
   };
