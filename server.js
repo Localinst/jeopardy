@@ -187,7 +187,7 @@ IMPORTANTE: Restituisci SOLO un oggetto JSON valido, senza comandi LaTeX o markd
       console.log('Header Authorization (primi 20 caratteri):', headers.Authorization.substring(0, 20) + '...');
       
       const requestBody = {
-        "model": "meta-llama/llama-3.3-8b-instruct:free", // Modello gratuito di OpenRouter
+        "model": "mistralai/mistral-small-3.2-24b-instruct:free", // Modello gratuito di OpenRouter
         "messages": [
           {
             "role": "system",
