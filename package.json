@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@huggingface/inference": "^3.13.0",
+    "@supabase/supabase-js": "^2.53.0",
     "axios": "^1.9.0",
     "body-parser": "^2.2.0",
     "cors": "^2.8.5",
