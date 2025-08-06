@@ -6,6 +6,10 @@ import dotenv from 'dotenv';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import path from 'path';
+import { createClient } from '@supabase/supabase-js';
+
+const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
+
 
 // Ottieni il percorso corrente per configurare dotenv
 const __filename = fileURLToPath(import.meta.url);
@@ -246,6 +250,56 @@ IMPORTANTE: Restituisci SOLO un oggetto JSON valido, senza comandi LaTeX o markd
           try {
             parsedData = JSON.parse(jsonMatch[0]);
             console.log('JSON estratto con successo tramite pattern matching');
+            try {
+              console.log('[DEBUG] Inizio salvataggio su Supabase...');
+
+  const { data: quizInsert, error: quizError } = await supabase
+    .from('quizzes')
+    .insert({
+      title: 'Quiz generato con categorie: ' + categories.join(', '),
+      created_by: null // Se hai auth, sostituisci con `req.user.id`
+    })
+    .select()
+    .single();
+
+  if (quizError) throw quizError;
+  const quizId = quizInsert.id;
+
+  for (let i = 0; i < parsedData.categories.length; i++) {
+    const cat = parsedData.categories[i];
+
+    const { data: categoryInsert, error: catError } = await supabase
+      .from('categories')
+      .insert({
+        quiz_id: quizId,
+        title: cat.title,
+        position: i + 1
+      })
+      .select()
+      .single();
+
+    if (catError) throw catError;
+    const categoryId = categoryInsert.id;
+
+    const questionsToInsert = cat.questions.map(q => ({
+      category_id: categoryId,
+      points: q.points,
+      text: q.text,
+      answer: q.answer
+    }));
+
+    const { error: questionsError } = await supabase
+      .from('questions')
+      .insert(questionsToInsert);
+
+    if (questionsError) throw questionsError;
+  }
+
+  console.log(`Quiz ${quizId} salvato correttamente in Supabase`);
+} catch (dbError) {
+  console.error('Errore nel salvataggio su Supabase:', dbError);
+  // Se vuoi, puoi restituire un 500 oppure continuare normalmente
+}
           } catch (innerError) {
             console.error('Errore nel parsing del JSON estratto:', innerError.message);
             // Tenta un'ulteriore pulizia del testo
