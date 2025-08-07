@@ -18,6 +18,25 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartGame, onCreateAIGame }
   const [sparklePosition, setSparklePosition] = useState({ top: 0, left: 0, size: 0 });
   const [showSparkle, setShowSparkle] = useState(false);
   const [sparkleCount, setSparkleCount] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleStartGame = async () => {
+    setIsLoading(true);
+    try {
+      if (window.gtag) {
+        window.gtag('event', 'start_random_quiz', {
+          event_category: 'Quiz',
+          event_label: 'Quiz con categorie casuali'
+        });
+      }
+      onStartGame();
+    } catch (error) {
+      console.error('Error starting game:', error);
+      // In caso di errore, mostra un messaggio all'utente o gestisci l'errore come preferisci
+    } finally {
+      setIsLoading(false);
+    }
+  };
   const handleCreateAIGame = () => {
   if (window.gtag) {
     window.gtag('event', 'create_ai_quiz', {
@@ -82,10 +101,13 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartGame, onCreateAIGame }
       
       <div className="space-y-4 w-full max-w-md">
         <button
-          onClick={onStartGame}
-          className="w-full bg-yellow-500 hover:bg-yellow-400 text-blue-900 py-4 px-6 rounded-lg text-xl font-bold transition-all transform hover:scale-105"
+          onClick={handleStartGame}
+          disabled={isLoading}
+          className={`w-full bg-yellow-500 hover:bg-yellow-400 text-blue-900 py-4 px-6 rounded-lg text-xl font-bold transition-all transform hover:scale-105 ${
+            isLoading ? 'opacity-70 cursor-not-allowed' : ''
+          }`}
         >
-          Gioca con Categorie Predefinite
+          {isLoading ? 'Caricamento...' : 'Gioca con Categorie Casuali'}
         </button>
         
         <button
@@ -97,6 +119,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartGame, onCreateAIGame }
           </span>
           <span className="absolute -inset-0.5 rounded-lg bg-gradient-to-r from-blue-400 via-blue-500 to-blue-600 opacity-0 group-hover:opacity-20 transition-opacity"></span>
         </button>
+
       </div>
       
       <p className="mt-12 text-blue-300 text-sm max-w-lg">

@@ -114,6 +114,53 @@ app.get('/ping', (req, res) => {
   });
 });
 
+// Endpoint per ottenere un quiz casuale dal database
+app.get('/random-quiz', async (req, res) => {
+  try {
+    // Prima ottieni il conteggio totale dei quiz
+    const { count, error: countError } = await supabase
+      .from('quizzes')
+      .select('*', { count: 'exact', head: true });
+
+    if (countError) throw countError;
+    
+    // Genera un offset casuale
+    const randomOffset = Math.floor(Math.random() * count);
+    
+    // Ottieni un quiz casuale usando l'offset
+    const { data: quiz, error: quizError } = await supabase
+      .from('quizzes')
+      .select('id')
+      .limit(1)
+      .range(randomOffset, randomOffset)
+      .single();
+
+    if (quizError) throw quizError;
+
+    // Ottieni tutte le categorie per questo quiz
+    const { data: categories, error: catError } = await supabase
+      .from('categories')
+      .select(`
+        id,
+        title,
+        questions (
+          text,
+          answer,
+          points
+        )
+      `)
+      .eq('quiz_id', quiz.id)
+      .order('position');
+
+    if (catError) throw catError;
+
+    res.json({ categories });
+  } catch (error) {
+    console.error('Error fetching random quiz:', error);
+    res.status(500).json({ error: 'Failed to fetch random quiz' });
+  }
+});
+
 app.post('/generate-quiz', async (req, res) => {
   const { categories } = req.body; // array da 5 categorie
 

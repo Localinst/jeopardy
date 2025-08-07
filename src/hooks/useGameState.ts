@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { GameState, Question, Category, Team } from '../types';
 import { defaultCategories } from '../constants/defaultCategories';
 import { v4 as uuidv4 } from 'uuid';
+import { getRandomQuiz } from '../services/quizService';
 
 // Squadre di default
 const defaultTeams: Team[] = [
@@ -45,14 +46,28 @@ const useGameState = () => {
     }
   }, [gameState]);
 
-  // Avvia il gioco normale
-  const startGame = () => {
-    setGameState({
-      ...gameState,
-      showLandingPage: false,
-      showTeamSetup: true,
-      showAISetup: false,
-    });
+  // Avvia il gioco normale con un quiz casuale dal database
+  const startGame = async () => {
+    try {
+      const randomCategories = await getRandomQuiz();
+      setGameState({
+        ...gameState,
+        categories: randomCategories,
+        showLandingPage: false,
+        showTeamSetup: true,
+        showAISetup: false,
+      });
+    } catch (error) {
+      console.error('Error loading random quiz:', error);
+      // In caso di errore, usa le categorie di default
+      setGameState({
+        ...gameState,
+        categories: defaultCategories,
+        showLandingPage: false,
+        showTeamSetup: true,
+        showAISetup: false,
+      });
+    }
   };
 
   // Mostra setup AI
@@ -208,8 +223,18 @@ const useGameState = () => {
     });
   };
 
+  // Rimuove i dati del gioco dal localStorage
+  const clearGameStorage = () => {
+    try {
+      localStorage.removeItem('jeopardyGameState');
+    } catch (error) {
+      console.error('Errore nella rimozione dello stato del gioco:', error);
+    }
+  };
+
   // Resetta il gioco
   const resetGame = () => {
+    clearGameStorage();
     setGameState({
       ...gameState,
       categories: defaultCategories,
