@@ -134,25 +134,54 @@ app.get('/random-quiz', async (req, res) => {
 
     // Filtra le categorie che hanno esattamente 5 domande
     const validCategories = allCategories.filter(cat => cat.questions?.length === 5);
-
-    if (validCategories.length < 5) {
+   if (validCategories.length < 5) {
       throw new Error('Non ci sono abbastanza categorie valide nel database');
     }
 
     // Mescola l'array delle categorie
     const shuffledCategories = validCategories.sort(() => Math.random() - 0.5);
-    
 
-    // Prendi le prime 5 categorie
-    const selectedCategories = shuffledCategories.slice(0, 5);
+    // Prendi le prime 4 categorie
+    const selectedCategories = shuffledCategories.slice(0, 4);
 
-    // Ordina le domande per punteggio in ogni categoria
-    const categories = selectedCategories.map(cat => ({
-      ...cat,
-      questions: cat.questions.sort((a, b) => a.points - b.points)
-    }));
+    // Raccogli tutte le domande disponibili nel database
+    const allQuestions = validCategories.flatMap(cat => 
+      cat.questions.map(q => ({
+        ...q,
+        categoryTitle: cat.title // Aggiungiamo il titolo della categoria originale
+      }))
+    );
 
-    if (catError) throw catError;
+    // Raggruppa le domande per punteggio
+    const questionsByPoints = {};
+    [100, 200, 300, 400, 500].forEach(points => {
+      questionsByPoints[points] = allQuestions.filter(q => q.points === points);
+    });
+
+    // Seleziona una domanda casuale per ogni punteggio
+    const mysteryQuestions = Object.entries(questionsByPoints).map(([points, questions]) => {
+      const randomQuestion = questions[Math.floor(Math.random() * questions.length)];
+      return {
+        ...randomQuestion,
+        text: `${randomQuestion.text} (da: ${randomQuestion.categoryTitle})`
+      };
+    }).sort((a, b) => a.points - b.points);
+
+    // Crea la categoria Mistero
+    const mysteryCategory = {
+      id: 'mystery',
+      title: '🎲 Mistero',
+      questions: mysteryQuestions
+    };
+
+    // Ordina le domande per punteggio in ogni categoria normale
+    const categories = [
+      ...selectedCategories.map(cat => ({
+        ...cat,
+        questions: cat.questions.sort((a, b) => a.points - b.points)
+      })),
+      mysteryCategory
+    ];
 
     res.json({ categories });
   } catch (error) {
