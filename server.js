@@ -163,14 +163,14 @@ app.get('/random-quiz', async (req, res) => {
       const randomQuestion = questions[Math.floor(Math.random() * questions.length)];
       return {
         ...randomQuestion,
-        text: `${randomQuestion.text} (da: ${randomQuestion.categoryTitle})`
+        text: `${randomQuestion.text} `
       };
     }).sort((a, b) => a.points - b.points);
 
     // Crea la categoria Mistero
     const mysteryCategory = {
       id: 'mystery',
-      title: '🎲 Mistero',
+      title: '???',
       questions: mysteryQuestions
     };
 
