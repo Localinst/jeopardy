@@ -114,31 +114,11 @@ app.get('/ping', (req, res) => {
   });
 });
 
-// Endpoint per ottenere un quiz casuale dal database
+// Endpoint per ottenere categorie casuali dal database
 app.get('/random-quiz', async (req, res) => {
   try {
-    // Prima ottieni il conteggio totale dei quiz
-    const { count, error: countError } = await supabase
-      .from('quizzes')
-      .select('*', { count: 'exact', head: true });
-
-    if (countError) throw countError;
-    
-    // Genera un offset casuale
-    const randomOffset = Math.floor(Math.random() * count);
-    
-    // Ottieni un quiz casuale usando l'offset
-    const { data: quiz, error: quizError } = await supabase
-      .from('quizzes')
-      .select('id')
-      .limit(1)
-      .range(randomOffset, randomOffset)
-      .single();
-
-    if (quizError) throw quizError;
-
-    // Ottieni tutte le categorie per questo quiz
-    const { data: categories, error: catError } = await supabase
+    // Ottieni tutte le categorie con le loro domande
+    const { data: allCategories, error: catError } = await supabase
       .from('categories')
       .select(`
         id,
@@ -148,9 +128,29 @@ app.get('/random-quiz', async (req, res) => {
           answer,
           points
         )
-      `)
-      .eq('quiz_id', quiz.id)
-      .order('position');
+      `);
+
+    if (catError) throw catError;
+
+    // Filtra le categorie che hanno esattamente 5 domande
+    const validCategories = allCategories.filter(cat => cat.questions?.length === 5);
+
+    if (validCategories.length < 5) {
+      throw new Error('Non ci sono abbastanza categorie valide nel database');
+    }
+
+    // Mescola l'array delle categorie
+    const shuffledCategories = validCategories.sort(() => Math.random() - 0.5);
+    
+
+    // Prendi le prime 5 categorie
+    const selectedCategories = shuffledCategories.slice(0, 5);
+
+    // Ordina le domande per punteggio in ogni categoria
+    const categories = selectedCategories.map(cat => ({
+      ...cat,
+      questions: cat.questions.sort((a, b) => a.points - b.points)
+    }));
 
     if (catError) throw catError;
 

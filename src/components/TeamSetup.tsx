@@ -142,17 +142,16 @@ const TeamSetup: React.FC<TeamSetupProps> = ({ onTeamsCreated, onCancel }) => {
                   className="h-8 w-8 rounded-full flex-shrink-0 mr-3" 
                   style={{ backgroundColor: team.color }}
                 ></div>
-                
+
                 <input
                   type="text"
                   value={team.name}
                   onChange={(e) => updateTeamName(index, e.target.value)}
                   placeholder={`Nome Squadra ${index + 1}`}
-                  className="flex-grow p-2 rounded-md bg-blue-800 border border-blue-700 text-white"
+                  className="w-40 p-2 rounded-md bg-blue-800 border border-blue-700 text-white"
                   required
                 />
-                
-                <div className="ml-3 flex-shrink-0">
+                <div className="ml-2 flex-shrink-0">
                   <select
                     value={team.color}
                     onChange={(e) => updateTeamColor(index, e.target.value)}
