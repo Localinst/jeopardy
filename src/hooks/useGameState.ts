@@ -11,6 +11,9 @@ const defaultTeams: Team[] = [
 ];
 
 const useGameState = () => {
+  // Flag per controllare se salvare o no nello storage
+  const [shouldSaveToStorage, setShouldSaveToStorage] = useState(true);
+
   // Try to load from localStorage first
   const loadSavedState = (): GameState => {
     try {
@@ -37,14 +40,16 @@ const useGameState = () => {
 
   const [gameState, setGameState] = useState<GameState>(loadSavedState);
 
-  // Save state to localStorage whenever it changes
+  // Save state to localStorage only when shouldSaveToStorage is true
   useEffect(() => {
-    try {
-      localStorage.setItem('jeopardyGameState', JSON.stringify(gameState));
-    } catch (error) {
-      console.error('Errore nel salvataggio dello stato del gioco:', error);
+    if (shouldSaveToStorage) {
+      try {
+        localStorage.setItem('jeopardyGameState', JSON.stringify(gameState));
+      } catch (error) {
+        console.error('Errore nel salvataggio dello stato del gioco:', error);
+      }
     }
-  }, [gameState]);
+  }, [gameState, shouldSaveToStorage]);
 
   // Avvia il gioco normale con un quiz casuale dal database
   const startGame = async () => {
@@ -298,12 +303,38 @@ const useGameState = () => {
 
   // Torna alla landing page
   const backToLanding = () => {
-    setGameState({
-      ...gameState,
+    // Disabilita temporaneamente il salvataggio nello storage
+    setShouldSaveToStorage(false);
+    
+    // Rimuovi i dati dal localStorage
+    clearGameStorage();
+    
+    // Reset di tutti i punteggi delle squadre e ritorno al menu principale
+    const resetTeams = gameState.teams.map(team => ({
+      ...team,
+      score: 0
+    }));
+    
+    const newState = {
+      categories: defaultCategories,
+      currentScore: 0,
+      selectedQuestion: null,
+      selectedCategory: null,
+      isEditMode: false,
       showLandingPage: true,
       showAISetup: false,
       showTeamSetup: false,
-    });
+      teams: resetTeams,
+      currentTeamIndex: 0
+    };
+    
+    // Aggiorna lo stato con un reset completo
+    setGameState(newState);
+    
+    // Riabilita il salvataggio nello storage dopo un breve ritardo
+    setTimeout(() => {
+      setShouldSaveToStorage(true);
+    }, 100);
   };
 
   // Torna alla configurazione delle squadre
