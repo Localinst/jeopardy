@@ -124,8 +124,19 @@ const useGameState = () => {
       currentQuizId: quizId || null,
     };
     setGameState(newState as unknown as GameState);
-    // After AI created, go to team setup
-    pushPath('/team-setup');
+    // After AI created, go to team setup (or push public quiz URL if saved)
+    if (quizId) {
+      // push public quiz url so it becomes shareable and indexable
+      try {
+        const prefix = getLangPrefix();
+        window.history.pushState({}, '', `${prefix}/quiz/${quizId}`);
+      } catch (e) {
+        // fallback to team-setup
+        pushPath('/team-setup');
+      }
+    } else {
+      pushPath('/team-setup');
+    }
   };
 
   // Imposta le squadre e avvia il gioco

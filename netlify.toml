@@ -1,0 +1,36 @@
+[build]
+  publish = "dist"
+  command = "npm run build"
+
+# Redirect API calls and dynamic SEO routes to Render backend
+[[redirects]]
+  from = "/api/*"
+  to = "https://jeopardy-b937.onrender.com/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/generate-quiz"
+  to = "https://jeopardy-b937.onrender.com/generate-quiz"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/sitemap.xml"
+  to = "https://jeopardy-b937.onrender.com/sitemap.xml"
+  status = 200
+  force = true
+
+# Proxy quiz pages so crawlers can access server-rendered quiz pages
+[[redirects]]
+  from = "/quiz/:id"
+  to = "https://jeopardy-b937.onrender.com/quiz/:id"
+  status = 200
+  force = true
+
+# Optional: forward any other server endpoints under /server/* to Render
+[[redirects]]
+  from = "/server/*"
+  to = "https://jeopardy-b937.onrender.com/:splat"
+  status = 200
+  force = true

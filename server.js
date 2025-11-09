@@ -6,6 +6,7 @@ import dotenv from 'dotenv';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import path from 'path';
+import fs from 'fs';
 
 
 import { createClient } from '@supabase/supabase-js';
@@ -417,6 +418,15 @@ Regole importanti:
                 }
 
                 console.log(`Quiz ${quizId} salvato correttamente in Supabase`);
+                // Rigenera sitemap statico dopo il salvataggio del quiz (se possibile)
+                try {
+                  if (typeof regenerateSitemap === 'function') {
+                    await regenerateSitemap();
+                    console.log('Sitemap rigenerata dopo il salvataggio del quiz');
+                  }
+                } catch (sErr) {
+                  console.error('Errore nella rigenerazione della sitemap:', sErr);
+                }
               } catch (dbError) {
                 console.error('Errore nel salvataggio su Supabase:', dbError);
                 // Se vuoi, puoi restituire un 500 oppure continuare normalmente
@@ -569,6 +579,45 @@ app.get('/sitemap.xml', async (req, res) => {
     res.status(500).send('Errore interno');
   }
 });
+
+// Helper: regenerate static sitemap file in public/
+async function regenerateSitemap() {
+  try {
+    const urls = [
+      { loc: 'https://jeopardyonline.it/', priority: 1.0 },
+      { loc: 'https://jeopardyonline.it/en/', priority: 0.8 },
+      { loc: 'https://jeopardyonline.it/it/', priority: 0.8 }
+    ];
+
+    if (supabase) {
+      const { data: quizzes, error: qError } = await supabase
+        .from('quizzes')
+        .select('id, created_at')
+        .order('created_at', { ascending: false })
+        .limit(1000);
+
+      if (!qError && quizzes && quizzes.length) {
+        quizzes.forEach(q => {
+          urls.push({ loc: `https://jeopardyonline.it/quiz/${q.id}`, priority: 0.6 });
+        });
+      }
+    }
+
+    const sitemap = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.map(u => `  <url>\n    <loc>${u.loc}</loc>\n    <priority>${u.priority}</priority>\n  </url>`).join('\n')}\n</urlset>`;
+
+    // Ensure public directory exists
+    const publicDir = path.join(__dirname, '..', 'public');
+    if (!fs.existsSync(publicDir)) fs.mkdirSync(publicDir, { recursive: true });
+
+    const sitemapPath = path.join(publicDir, 'sitemap.xml');
+    fs.writeFileSync(sitemapPath, sitemap, 'utf-8');
+    console.log('Static sitemap written to', sitemapPath);
+    return true;
+  } catch (error) {
+    console.error('Error regenerating sitemap:', error);
+    return false;
+  }
+}
 
 // Funzione per generare dati di fallback
 function generateFallbackData(categories, lang = 'it') {
