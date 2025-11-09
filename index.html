@@ -61,6 +61,36 @@
       ]
     }
     </script>
+    <script>
+      // Update canonical and og:url dynamically based on the path
+      (function(){
+        try {
+          const base = 'https://jeopardyonline.it';
+          const path = (typeof window !== 'undefined' && window.location && window.location.pathname) ? window.location.pathname : '/';
+          let canonical = base + '/';
+          if (path.startsWith('/en')) canonical = base + '/en/';
+          else if (path.startsWith('/it')) canonical = base + '/it/';
+
+          // Update or create canonical link
+          let link = document.querySelector('link[rel="canonical"]');
+          if (!link) {
+            link = document.createElement('link');
+            link.setAttribute('rel','canonical');
+            document.head.appendChild(link);
+          }
+          link.setAttribute('href', canonical);
+
+          // Update og:url
+          let og = document.querySelector('meta[property="og:url"]');
+          if (!og) {
+            og = document.createElement('meta');
+            og.setAttribute('property','og:url');
+            document.head.appendChild(og);
+          }
+          og.setAttribute('content', canonical);
+        } catch(e) { console.warn('Error updating canonical', e); }
+      })();
+    </script>
   </head>
   <body>
     <!-- SEO content block (moved off-screen per user request). WARNING: hiding content from users but showing it to crawlers can be considered cloaking by search engines. Prefer visible content or prerendering instead. -->
