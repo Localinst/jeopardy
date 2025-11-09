@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
+import { Helmet } from 'react-helmet-async';
+import { useTranslation } from 'react-i18next';
+import { SITE_URL } from '../config';
 import { Loader2, RefreshCw } from 'lucide-react';
 import { generateCategoriesWithAI } from '../services/aiService';
 
 interface AIGameSetupProps {
-  onGameCreated: (categories: any[]) => void;
+  onGameCreated: (categories: any[], quizId?: string | null) => void;
   onCancel: () => void;
 }
 
@@ -16,6 +19,7 @@ const AIIcon = () => (
 );
 
 const AIGameSetup: React.FC<AIGameSetupProps> = ({ onGameCreated, onCancel }) => {
+  const { t, i18n } = useTranslation();
   const [topics, setTopics] = useState<string[]>(['', '', '', '', '']);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
@@ -43,8 +47,11 @@ const AIGameSetup: React.FC<AIGameSetupProps> = ({ onGameCreated, onCancel }) =>
     }, 500);
 
     try {
-      // Chiamata all'API tramite il nostro servizio
-      const categoriesData = await generateCategoriesWithAI(topics);
+  // Chiamata all'API tramite il nostro servizio (passiamo la lingua corrente)
+  const currentLang = i18n?.language || 'it';
+  const result = await generateCategoriesWithAI(topics, currentLang);
+  const categoriesData = result.categories;
+  const quizId = result.quizId || null;
       
       // Completiamo il progresso al 100%
       clearInterval(progressInterval);
@@ -52,7 +59,7 @@ const AIGameSetup: React.FC<AIGameSetupProps> = ({ onGameCreated, onCancel }) =>
       
       // Piccolo ritardo per mostrare il 100% prima di procedere
       setTimeout(() => {
-        onGameCreated(categoriesData);
+        onGameCreated(categoriesData, quizId);
       }, 500);
     } catch (err) {
       clearInterval(progressInterval);
@@ -102,22 +109,29 @@ const AIGameSetup: React.FC<AIGameSetupProps> = ({ onGameCreated, onCancel }) =>
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-950 to-blue-900 text-white flex flex-col items-center justify-center p-4">
+      <Helmet>
+        <link rel="canonical" href={`${SITE_URL}/ai-setup`} />
+        <title>{t ? t('create_ai') : 'Create AI Quiz'}</title>
+        <meta name="description" content={t ? t('description') : 'Generate custom quizzes using AI.'} />
+        <link rel="alternate" hrefLang="en" href={`${SITE_URL}/en/ai-setup`} />
+        <link rel="alternate" hrefLang="it" href={`${SITE_URL}/it/ai-setup`} />
+      </Helmet>
       <div className="bg-blue-900 border border-blue-800 rounded-lg shadow-xl max-w-2xl w-full p-6">
         <div className="flex items-center justify-center mb-4">
           <AIIcon />
           <h2 className="text-3xl font-bold text-white text-center ml-3">
-            Generatore Quiz
+            {t('ai_generator_title')}
           </h2>
         </div>
         
         <p className="text-blue-300 mb-6 text-center">
-          Inserisci 5 categorie per cui la nostra AI genererà domande e risposte personalizzate.
+          {t('ai_instructions')}
         </p>
 
         {error && (
           <div className="bg-red-900 text-white p-3 rounded-md mb-4">
             <div className="flex items-center justify-between">
-              <p>{error}</p>
+                <p>{error}</p>
               {retryCount < 3 && (
                 <button 
                   onClick={handleRetry}
@@ -125,7 +139,7 @@ const AIGameSetup: React.FC<AIGameSetupProps> = ({ onGameCreated, onCancel }) =>
                   disabled={isLoading}
                 >
                   <RefreshCw className="h-4 w-4 mr-1" />
-                  Riprova
+                    {t('try_again')}
                 </button>
               )}
             </div>
@@ -136,7 +150,7 @@ const AIGameSetup: React.FC<AIGameSetupProps> = ({ onGameCreated, onCancel }) =>
             )}
             {retryCount >= 3 && (
               <p className="text-sm mt-2">
-                Hai provato più volte. Prova a cambiare le categorie o riprova più tardi.
+                {t('tried_multiple')}
               </p>
             )}
           </div>
@@ -150,20 +164,20 @@ const AIGameSetup: React.FC<AIGameSetupProps> = ({ onGameCreated, onCancel }) =>
               className="w-full px-4 py-2 bg-blue-800 hover:bg-blue-700 text-white rounded transition"
               disabled={isLoading}
             >
-              Suggerisci Categorie Casuali
+              {t('suggest_random')}
             </button>
           </div>
         
           {topics.map((topic, index) => (
             <div key={index} className="mb-3">
               <label className="block text-blue-300 mb-1">
-                Categoria {index + 1}:
+                {t('category_placeholder', { n: index + 1 })}
               </label>
               <input
                 type="text"
                 value={topic}
                 onChange={(e) => handleTopicChange(index, e.target.value)}
-                placeholder={`Inserisci la categoria ${index + 1}`}
+                placeholder={t('category_placeholder', { n: index + 1 })}
                 className="w-full p-3 rounded-md bg-blue-800 border border-blue-700 text-white placeholder-blue-400"
                 disabled={isLoading}
               />
@@ -179,7 +193,7 @@ const AIGameSetup: React.FC<AIGameSetupProps> = ({ onGameCreated, onCancel }) =>
                 />
               </div>
               <p className="text-center text-blue-300 mt-2">
-                Generazione domande in corso... {progress}%
+                {t('generating_in_progress')} {progress}%
               </p>
             </div>
           )}
@@ -191,7 +205,7 @@ const AIGameSetup: React.FC<AIGameSetupProps> = ({ onGameCreated, onCancel }) =>
               className="px-5 py-2 bg-gray-700 text-white rounded-md hover:bg-gray-600 transition"
               disabled={isLoading}
             >
-              Annulla
+              {t('cancel')}
             </button>
             
             <button
@@ -202,10 +216,10 @@ const AIGameSetup: React.FC<AIGameSetupProps> = ({ onGameCreated, onCancel }) =>
               {isLoading ? (
                 <>
                   <Loader2 className="h-5 w-5 animate-spin" />
-                  <span>Generazione in corso...</span>
+                  <span>{t('generating_in_progress')}</span>
                 </>
               ) : (
-                <span>Genera Quiz</span>
+                <span>{t('generate_quiz')}</span>
               )}
             </button>
           </div>

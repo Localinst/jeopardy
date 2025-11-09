@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { Helmet } from 'react-helmet-async';
+import { SITE_URL } from '../config';
 import { Question, Category, Team } from '../types';
 
 interface QuestionModalProps {
@@ -135,22 +137,20 @@ const QuestionModal: React.FC<QuestionModalProps> = ({
     return 'text-red-500';
   };
 
-  // Determina il messaggio in base al tipo di domanda
-  const getTypeDescription = () => {
-    switch(question.type) {
-      case 'secca': 
-        return 'Questa è una domanda a risposta secca, la risposta deve essere esatta.';
-      case 'aperta':
-        return 'Questa è una domanda a risposta aperta, può esserci una certa flessibilità.';
-      case 'margine_errore':
-        return 'Questa è una domanda con margine di errore, accetta risposte approssimate.';
-      default:
-        return '';
-    }
-  };
+  // (tipo di domanda viene mostrato nell'interfaccia; nessuna descrizione aggiuntiva usata qui)
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 p-4">
+      <Helmet>
+        {/* Canonical: compose from SITE_URL and current path (if using client routes, ensure routes reflect shareable URLs) */}
+        <link rel="canonical" href={`${SITE_URL}${typeof window !== 'undefined' ? window.location.pathname : '/'}`} />
+        <title>{`${category.title} — ${question.points} pts`}</title>
+        <meta name="description" content={question.text} />
+        <meta property="og:title" content={`${category.title} — ${question.points} pts`} />
+        <meta property="og:description" content={question.text} />
+        <link rel="alternate" hrefLang="en" href={`${SITE_URL}${typeof window !== 'undefined' ? '/en' + window.location.pathname : '/en'}`} />
+        <link rel="alternate" hrefLang="it" href={`${SITE_URL}${typeof window !== 'undefined' ? '/it' + window.location.pathname : '/it'}`} />
+      </Helmet>
       <div className="bg-blue-900 rounded-lg shadow-2xl max-w-2xl w-full mx-auto overflow-hidden transform transition-all animate-fadeIn">
         <div className="p-6">
           {isEditMode ? (

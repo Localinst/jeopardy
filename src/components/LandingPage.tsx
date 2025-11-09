@@ -1,4 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import { Helmet } from 'react-helmet-async';
+import { SITE_URL } from '../config';
+import { useTranslation } from 'react-i18next';
 import { Brain, Sparkles } from 'lucide-react';
 
 declare global {
@@ -19,6 +22,20 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartGame, onCreateAIGame }
   const [showSparkle, setShowSparkle] = useState(false);
   const [sparkleCount, setSparkleCount] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
+  const { t, i18n } = useTranslation();
+
+  const changeLanguage = (lng: string) => {
+    i18n.changeLanguage(lng);
+    // update URL to include language prefix for better indexing
+    try {
+      const path = window.location.pathname.replace(/^(\/it|\/en)/, '');
+      const newPath = `/${lng}${path}`;
+      window.history.replaceState({}, '', newPath);
+      document.documentElement.lang = lng;
+    } catch (e) {
+      // ignore
+    }
+  };
 
   const handleStartGame = async () => {
     setIsLoading(true);
@@ -76,7 +93,35 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartGame, onCreateAIGame }
   }, [sparkleCount]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-950 to-blue-900 text-white flex flex-col items-center justify-center px-4 text-center">
+    <div className="relative min-h-screen bg-gradient-to-b from-blue-950 to-blue-900 text-white flex flex-col items-center justify-center px-4 text-center">
+      <Helmet>
+        <title>{t('title')}</title>
+        <meta name="description" content={t('description')} />
+        <link rel="canonical" href={`${SITE_URL}/`} />
+        <link rel="alternate" hrefLang="en" href={`${SITE_URL}/en/`} />
+        <link rel="alternate" hrefLang="it" href={`${SITE_URL}/it/`} />
+      </Helmet>
+
+      {/* Language picker: top-right with flags */}
+      <div className="absolute top-4 right-4 flex items-center gap-2" role="navigation" aria-label="Language selector">
+        <button
+          onClick={() => changeLanguage('en')}
+          title="English"
+          aria-label="English"
+          className="px-4 py-2 rounded-md bg-black/30 hover:bg-black/40 text-sm"
+        >
+          <span className="mr-2">🇬🇧</span> EN
+        </button>
+        <button
+          onClick={() => changeLanguage('it')}
+          title="Italiano"
+          aria-label="Italiano"
+          className="px-4 py-2 rounded-md bg-black/30 hover:bg-black/40 text-sm"
+        >
+          <span className="mr-2">🇮🇹</span> IT
+        </button>
+      </div>
+
       <div className="relative mb-8">
         <Brain className="h-16 w-16 text-yellow-400 animate-pulse" />
         
@@ -94,12 +139,12 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartGame, onCreateAIGame }
         )}
       </div>
       
-      <h1 className="text-5xl font-bold text-yellow-400 mb-4">Quiz Jeopardy</h1>
-      <p className="text-blue-300 text-xl max-w-2xl mb-12">
-        Metti alla prova le tue conoscenze con questo classico gioco di quiz!
-      </p>
+      <h1 className="text-5xl font-bold text-yellow-400 mb-4">{t('title')}</h1>
+      <p className="text-blue-300 text-xl max-w-2xl mb-12">{t('subtitle')}</p>
       
       <div className="space-y-4 w-full max-w-md">
+       
+
         <button
           onClick={handleStartGame}
           disabled={isLoading}
@@ -107,7 +152,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartGame, onCreateAIGame }
             isLoading ? 'opacity-70 cursor-not-allowed' : ''
           }`}
         >
-          {isLoading ? 'Caricamento...' : 'Gioca con Categorie Casuali'}
+          {isLoading ? t('loading') : t('start_random')}
         </button>
         
         <button
@@ -115,16 +160,14 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartGame, onCreateAIGame }
           className="w-full bg-blue-600 hover:bg-blue-500 text-white py-4 px-6 rounded-lg text-xl font-bold transition-all transform hover:scale-105 relative group"
         >
           <span className="flex items-center justify-center">
-            Crea Quiz con IA
+            {t('create_ai')}
           </span>
           <span className="absolute -inset-0.5 rounded-lg bg-gradient-to-r from-blue-400 via-blue-500 to-blue-600 opacity-0 group-hover:opacity-20 transition-opacity"></span>
         </button>
 
       </div>
       
-      <p className="mt-12 text-blue-300 text-sm max-w-lg">
-        La funzionalità AI genera automaticamente domande e risposte personalizzate basate sulle categorie che scegli!
-      </p>
+      <p className="mt-12 text-blue-300 text-sm max-w-lg">{t('description')}</p>
       
      
     </div>

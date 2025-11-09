@@ -1,4 +1,6 @@
 import React from 'react';
+import { Helmet } from 'react-helmet-async';
+import { useTranslation } from 'react-i18next';
 import GameBoard from './components/GameBoard';
 import GameControls from './components/GameControls';
 import LandingPage from './components/LandingPage';
@@ -8,6 +10,7 @@ import useGameState from './hooks/useGameState';
 import { Gamepad2, Users, ChevronRight } from 'lucide-react';
 
 function App() {
+  const { t } = useTranslation();
   const {
     gameState,
     selectQuestion,
@@ -29,8 +32,7 @@ function App() {
   } = useGameState();
 
   const { 
-    categories, 
-    currentScore, 
+  categories, 
     selectedQuestion, 
     selectedCategory, 
     isEditMode,
@@ -65,6 +67,12 @@ function App() {
   // Render il gioco
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-950 to-blue-900 text-white">
+      <Helmet>
+        <title>{t('title')}</title>
+        <meta name="description" content={t('description')} />
+        <meta property="og:title" content={t('title')} />
+        <meta property="og:description" content={t('description')} />
+      </Helmet>
       <div className="container mx-auto px-4 py-8 pb-24">
         {/* Header */}
         <header className="mb-8 text-center">

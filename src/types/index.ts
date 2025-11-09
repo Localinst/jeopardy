@@ -20,4 +20,5 @@ export interface GameState {
   isEditMode: boolean;
   showLandingPage: boolean;
   showAISetup: boolean;
+  currentQuizId?: string | null;
 }

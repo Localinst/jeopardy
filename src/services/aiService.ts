@@ -46,7 +46,7 @@ const extractValidJson = (text: string): any => {
 /**
  * Trasforma i temi forniti dall'utente in categorie complete utilizzando il backend
  */
-export const generateCategoriesWithAI = async (topics: string[]): Promise<Category[]> => {
+export const generateCategoriesWithAI = async (topics: string[], lang?: string): Promise<{ categories: Category[]; quizId?: string | null }> => {
   try {
     console.log('Chiamata al server backend per generazione quiz in corso...');
     
@@ -60,7 +60,7 @@ export const generateCategoriesWithAI = async (topics: string[]): Promise<Catego
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({ categories: topics })
+        body: JSON.stringify({ categories: topics, lang: lang || 'it' })
       });
 
       console.log('Stato risposta API:', response.status, response.statusText);
@@ -77,7 +77,7 @@ export const generateCategoriesWithAI = async (topics: string[]): Promise<Catego
         throw new Error(`Errore nella chiamata al server: ${response.status} ${response.statusText}`);
       }
 
-      const parsedData = await response.json();
+  const parsedData = await response.json();
       console.log('Risposta API ricevuta:', parsedData);
       
       if (!parsedData || !parsedData.categories) {
@@ -85,16 +85,17 @@ export const generateCategoriesWithAI = async (topics: string[]): Promise<Catego
         throw new Error('Risposta vuota o in formato non riconosciuto dal server');
       }
       
-      // Convertiamo i dati nel formato richiesto dalla nostra applicazione
-      return mapApiResponseToCategories(parsedData, topics);
+  // Convertiamo i dati nel formato richiesto dalla nostra applicazione
+  const categories = mapApiResponseToCategories(parsedData, topics);
+  return { categories, quizId: parsedData.quizId || null };
     } catch (error) {
       console.error('Errore nella chiamata al server:', error);
-      return createFallbackCategories(topics);
+  return { categories: createFallbackCategories(topics), quizId: null };
     }
   } catch (error) {
     console.error('Errore nella generazione con AI:', (error as Error).message);
     // In caso di errore, ritorniamo categorie di fallback
-    return createFallbackCategories(topics);
+    return { categories: createFallbackCategories(topics), quizId: null };
   }
 };
 

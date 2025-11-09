@@ -5,6 +5,58 @@
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Jeopardy-Style Quiz Game</title>
+
+    <!-- SEO: default meta -->
+    <meta name="description" content="Play a Jeopardy-style quiz game powered by AI — create custom quizzes, play with teams, and test your knowledge in English or Italian." />
+    <meta name="keywords" content="jeopardy, quiz, game, ai quiz, trivia, italiano, english, squadra" />
+    <meta name="author" content="Your Project Name" />
+    <meta name="robots" content="index, follow" />
+
+  <!-- Multilingual hreflang (production absolute URLs) -->
+  <link rel="alternate" href="https://jeopardyonline.it/en/" hreflang="en" />
+  <link rel="alternate" href="https://jeopardyonline.it/it/" hreflang="it" />
+  <link rel="alternate" href="https://jeopardyonline.it/" hreflang="x-default" />
+
+  <!-- Canonical (production) -->
+  <link rel="canonical" href="https://jeopardyonline.it/" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Jeopardy AI Quiz" />
+    <meta property="og:title" content="Jeopardy-Style Quiz Game" />
+    <meta property="og:description" content="Play a Jeopardy-style quiz game powered by AI — custom quizzes, team play, bilingual support (EN/IT)." />
+  <meta property="og:url" content="https://jeopardyonline.it/" />
+  <meta property="og:image" content="https://jeopardyonline.it/og-image.png" />
+    <meta property="og:locale" content="en_US" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Jeopardy-Style Quiz Game" />
+    <meta name="twitter:description" content="Play a Jeopardy-style quiz game powered by AI — custom quizzes, team play, bilingual support (EN/IT)." />
+    <meta name="twitter:image" content="/og-image.png" />
+
+    <!-- JSON-LD structured data: WebSite and SoftwareApplication -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebSite",
+          "name": "Jeopardy AI Quiz",
+          "url": "https://jeopardyonline.it/",
+          "inLanguage": "en"
+        },
+        {
+          "@type": "SoftwareApplication",
+          "name": "Jeopardy AI Quiz",
+          "operatingSystem": "Web",
+          "applicationCategory": "Game",
+          "description": "A Jeopardy-style quiz game that generates quizzes using AI. Supports English and Italian languages.",
+          "url": "https://jeopardyonline.it/"
+        }
+      ]
+    }
+    </script>
   </head>
   <body>
     <div id="root"></div>

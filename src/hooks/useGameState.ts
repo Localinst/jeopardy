@@ -40,6 +40,26 @@ const useGameState = () => {
 
   const [gameState, setGameState] = useState<GameState>(loadSavedState);
 
+  // Helper: get current language prefix from pathname (e.g. /en or /it)
+  const getLangPrefix = () => {
+    try {
+      const m = window.location.pathname.match(/^\/(en|it)(?:\/|$)/);
+      return m ? `/${m[1]}` : '';
+    } catch (e) {
+      return '';
+    }
+  };
+
+  const pushPath = (path: string) => {
+    try {
+      const prefix = getLangPrefix();
+      const newPath = prefix + path;
+      window.history.pushState({}, '', newPath);
+    } catch (e) {
+      // ignore
+    }
+  };
+
   // Save state to localStorage only when shouldSaveToStorage is true
   useEffect(() => {
     if (shouldSaveToStorage) {
@@ -62,6 +82,8 @@ const useGameState = () => {
         showTeamSetup: true,
         showAISetup: false,
       });
+      // Update URL to team-setup/game flow
+      pushPath('/team-setup');
     } catch (error) {
       console.error('Error loading random quiz:', error);
       // In caso di errore, usa le categorie di default
@@ -72,6 +94,7 @@ const useGameState = () => {
         showTeamSetup: true,
         showAISetup: false,
       });
+      pushPath('/team-setup');
     }
   };
 
@@ -83,11 +106,12 @@ const useGameState = () => {
       showAISetup: true,
       showTeamSetup: false,
     });
+    pushPath('/ai-setup');
   };
 
   // Crea un nuovo gioco con categorie generate dall'AI
-  const createAIGame = (aiCategories: Category[]) => {
-    setGameState({
+  const createAIGame = (aiCategories: Category[], quizId?: string | null) => {
+    const newState: any = {
       ...gameState,
       categories: aiCategories,
       currentScore: 0,
@@ -97,7 +121,11 @@ const useGameState = () => {
       showLandingPage: false,
       showAISetup: false,
       showTeamSetup: true,
-    });
+      currentQuizId: quizId || null,
+    };
+    setGameState(newState as unknown as GameState);
+    // After AI created, go to team setup
+    pushPath('/team-setup');
   };
 
   // Imposta le squadre e avvia il gioco
@@ -108,6 +136,8 @@ const useGameState = () => {
       currentTeamIndex: 0,
       showTeamSetup: false,
     });
+    // Now entering the game board
+    pushPath('/game');
   };
 
   // Seleziona una domanda
@@ -335,6 +365,7 @@ const useGameState = () => {
     setTimeout(() => {
       setShouldSaveToStorage(true);
     }, 100);
+    pushPath('/');
   };
 
   // Torna alla configurazione delle squadre
@@ -343,6 +374,7 @@ const useGameState = () => {
       ...gameState,
       showTeamSetup: true,
     });
+    pushPath('/team-setup');
   };
 
   return {

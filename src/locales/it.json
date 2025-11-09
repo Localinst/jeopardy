@@ -1,0 +1,20 @@
+{
+  "title": "Quiz Jeopardy",
+  "subtitle": "Metti alla prova le tue conoscenze con questo classico gioco di quiz!",
+  "start_random": "Gioca con Categorie Casuali",
+  "create_ai": "Crea Quiz con IA",
+  "loading": "Caricamento...",
+  "description": "Gioca a un gioco di quiz in stile Jeopardy generato con l'IA — crea quiz personalizzati, gioca in squadra e metti alla prova le tue conoscenze in italiano o inglese."
+  ,
+  "ai_generator_title": "Generatore Quiz IA",
+  "ai_instructions": "Inserisci 5 categorie e la nostra IA genererà domande e risposte per ciascuna.",
+  "suggest_random": "Suggerisci Categorie Casuali",
+  "cancel": "Annulla",
+  "generate_quiz": "Genera Quiz",
+  "generating_in_progress": "Generazione domande in corso...",
+  "error_generation": "Si è verificato un errore durante la generazione delle domande:",
+  "please_fill_all": "Per favore inserisci tutte e 5 le categorie.",
+  "try_again": "Riprova",
+  "tried_multiple": "Hai provato più volte. Prova a cambiare le categorie o riprova più tardi.",
+  "category_placeholder": "Inserisci la categoria {{n}}"
+}

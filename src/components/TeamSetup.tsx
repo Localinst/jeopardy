@@ -1,4 +1,7 @@
 import React, { useState } from 'react';
+import { Helmet } from 'react-helmet-async';
+import { useTranslation } from 'react-i18next';
+import { SITE_URL } from '../config';
 import { Plus, Minus, Users, Check, Trophy } from 'lucide-react';
 
 interface Team {
@@ -30,6 +33,7 @@ const DEFAULT_TEAMS = [
 ];
 
 const TeamSetup: React.FC<TeamSetupProps> = ({ onTeamsCreated, onCancel }) => {
+  const { t } = useTranslation();
   const [teams, setTeams] = useState<Team[]>(DEFAULT_TEAMS);
   const [error, setError] = useState('');
 
@@ -90,6 +94,13 @@ const TeamSetup: React.FC<TeamSetupProps> = ({ onTeamsCreated, onCancel }) => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-950 to-blue-900 text-white flex flex-col items-center justify-center p-4">
+      <Helmet>
+        <link rel="canonical" href={`${SITE_URL}/team-setup`} />
+        <title>{t ? t('title') : 'Jeopardy AI Quiz'}</title>
+        <meta name="description" content={t ? t('description') : 'Configure teams for the Jeopardy AI quiz.'} />
+        <link rel="alternate" hrefLang="en" href={`${SITE_URL}/en/team-setup`} />
+        <link rel="alternate" hrefLang="it" href={`${SITE_URL}/it/team-setup`} />
+      </Helmet>
       <div className="bg-blue-900 border border-blue-800 rounded-lg shadow-xl max-w-2xl w-full p-6">
         <div className="flex items-center justify-center mb-6">
           <Users className="h-8 w-8 text-yellow-400 mr-3" />

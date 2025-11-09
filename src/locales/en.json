@@ -1,0 +1,20 @@
+{
+  "title": "Jeopardy AI Quiz",
+  "subtitle": "Test your knowledge with this classic quiz game!",
+  "start_random": "Play with Random Categories",
+  "create_ai": "Create AI Quiz",
+  "loading": "Loading...",
+  "description": "Play a Jeopardy-style quiz game powered by AI — create custom quizzes, play with teams, and test your knowledge in English or Italian."
+  ,
+  "ai_generator_title": "AI Quiz Generator",
+  "ai_instructions": "Enter 5 categories and the AI will generate questions and answers for each.",
+  "suggest_random": "Suggest Random Categories",
+  "cancel": "Cancel",
+  "generate_quiz": "Generate Quiz",
+  "generating_in_progress": "Generating questions...",
+  "error_generation": "An error occurred while generating questions:",
+  "please_fill_all": "Please fill in all 5 categories.",
+  "try_again": "Try again",
+  "tried_multiple": "You've tried multiple times. Try changing the categories or try later.",
+  "category_placeholder": "Enter category {{n}}"
+}
