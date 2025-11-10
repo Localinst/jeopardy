@@ -24,7 +24,8 @@ const useGameState = () => {
     } catch (error) {
       console.error('Errore nel caricamento dello stato del gioco:', error);
     }
-    return {
+    // Default initial state
+    const initial: GameState = {
       categories: defaultCategories,
       currentScore: 0,
       selectedQuestion: null,
@@ -36,6 +37,28 @@ const useGameState = () => {
       teams: defaultTeams,
       currentTeamIndex: 0
     };
+
+    // If the app is opened directly on a client-side route, initialize accordingly
+    try {
+      const path = typeof window !== 'undefined' ? (window.location.pathname || '/') : '/';
+      const langMatch = path.match(/^\/(en|it)(?:\/|$)/);
+      const prefix = langMatch ? `/${langMatch[1]}` : '';
+      const route = path.replace(prefix, '') || '/';
+
+      if (route.startsWith('/team-setup')) {
+        initial.showLandingPage = false;
+        initial.showTeamSetup = true;
+      } else if (route.startsWith('/ai-setup')) {
+        initial.showLandingPage = false;
+        initial.showAISetup = true;
+      } else if (route.startsWith('/game')) {
+        initial.showLandingPage = false;
+      }
+    } catch (e) {
+      // ignore
+    }
+
+    return initial;
   };
 
   const [gameState, setGameState] = useState<GameState>(loadSavedState);
@@ -73,6 +96,25 @@ const useGameState = () => {
 
   // On mount: if URL contains ?quizId=, fetch the quiz data and initialize state for team setup
   useEffect(() => {
+    // If the user loaded a client-side route directly (e.g. /team-setup, /game, /ai-setup)
+    // we should initialize the corresponding view instead of showing the landing page.
+    try {
+      const path = window.location.pathname || '/';
+      const langMatch = path.match(/^\/(en|it)(?:\/|$)/);
+      const prefix = langMatch ? `/${langMatch[1]}` : '';
+      const route = path.replace(prefix, '') || '/';
+
+      if (route.startsWith('/team-setup')) {
+        setGameState(prev => ({ ...prev, showLandingPage: false, showTeamSetup: true } as any));
+      } else if (route.startsWith('/ai-setup')) {
+        setGameState(prev => ({ ...prev, showLandingPage: false, showAISetup: true } as any));
+      } else if (route.startsWith('/game')) {
+        setGameState(prev => ({ ...prev, showLandingPage: false } as any));
+      }
+    } catch (e) {
+      // ignore
+    }
+
     try {
       const params = new URLSearchParams(window.location.search);
       const quizId = params.get('quizId');
