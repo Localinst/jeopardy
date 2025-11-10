@@ -36,7 +36,7 @@ const app = express();
 
 // Configura CORS in modo più permissivo
 const corsOptions = {
-  origin: ['https://jeopard.netlify.app', 'http://localhost:5173', 'http://localhost:3000', 'http://localhost:5174','https://jeopardy-b937.onrender.com/generate-quiz'],
+  origin: ['https://jeopard.netlify.app','https://jeopardyonline.it', 'http://localhost:5173', 'http://localhost:3000', 'http://localhost:5174','https://jeopardy-b937.onrender.com/generate-quiz'],
   methods: ['GET', 'POST'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
@@ -131,13 +131,7 @@ app.get('/ping', (req, res) => {
 // Endpoint per ottenere categorie casuali dal database
 app.get('/random-quiz', async (req, res) => {
   try {
-    if (!supabase) {
-      const reqLang = (req.query.lang && String(req.query.lang)) || (req.headers['accept-language'] && String(req.headers['accept-language']).split(',')[0]) || 'it';
-      const language = reqLang && reqLang.startsWith('en') ? 'en' : 'it';
-      console.warn('/random-quiz called but supabase is not configured, returning fallback categories', language);
-      const fallback = generateFallbackData(['General','History','Science','Music','Cinema'], language);
-      return res.json(fallback);
-    }
+    
     // Ottieni tutte le categorie con le loro domande
     const { data: allCategories, error: catError } = await supabase
       .from('categories')

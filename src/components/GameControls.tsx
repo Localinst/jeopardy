@@ -28,7 +28,15 @@ const GameControls: React.FC<GameControlsProps> = ({
         
         <div className="flex flex-wrap gap-2 justify-center">
           <button
-            onClick={onBackToLanding}
+            onClick={() => {
+              try {
+                // Clear only the app state key to avoid removing unrelated storage
+                localStorage.removeItem('jeopardyGameState');
+              } catch (e) {
+                console.error('Error clearing localStorage:', e);
+              }
+              onBackToLanding();
+            }}
             className="bg-blue-800 hover:bg-blue-700 text-white px-4 py-2 rounded font-semibold transition flex items-center"
           >
             <Home className="h-4 w-4 mr-1" />

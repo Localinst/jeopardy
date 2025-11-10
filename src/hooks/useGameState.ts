@@ -163,6 +163,9 @@ const useGameState = () => {
         showLandingPage: false,
         showTeamSetup: true,
         showAISetup: false,
+        // Ensure teams are reset when starting a fresh game
+        teams: defaultTeams.map(t => ({ ...t, score: 0 })),
+        currentTeamIndex: 0,
       });
       // Update URL to team-setup/game flow
       pushPath('/team-setup');
@@ -175,6 +178,8 @@ const useGameState = () => {
         showLandingPage: false,
         showTeamSetup: true,
         showAISetup: false,
+        teams: defaultTeams.map(t => ({ ...t, score: 0 })),
+        currentTeamIndex: 0,
       });
       pushPath('/team-setup');
     }
@@ -223,9 +228,11 @@ const useGameState = () => {
 
   // Imposta le squadre e avvia il gioco
   const setTeamsAndStartGame = (teams: Team[]) => {
+    // Ensure incoming teams have scores reset (start fresh)
+    const sanitizedTeams = teams.map(t => ({ ...t, score: 0 }));
     setGameState({
       ...gameState,
-      teams,
+      teams: sanitizedTeams,
       currentTeamIndex: 0,
       showTeamSetup: false,
     });
@@ -421,6 +428,9 @@ const useGameState = () => {
       selectedQuestion: null,
       selectedCategory: null,
       isEditMode: true,
+      // Reset teams when creating a new empty game
+      teams: defaultTeams.map(t => ({ ...t, score: 0 })),
+      currentTeamIndex: 0,
     });
   };
 
