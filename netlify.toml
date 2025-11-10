@@ -34,14 +34,14 @@
   from = "/en"
   to = "/index.html"
   status = 200
-  force = false
+  force = true
 
 [[redirects]]
   # Let the SPA handle any English subroutes so components load (e.g. /en/team-setup)
   from = "/en/*"
   to = "/index.html"
   status = 200
-  force = false
+  force = true
 
 [[redirects]]
   # Serve the static Italian landing only at the exact /it root
@@ -49,14 +49,14 @@
   from = "/it"
   to = "/index.html"
   status = 200
-  force = false
+  force = true
 
 [[redirects]]
   # Let the SPA handle any Italian subroutes so components load (e.g. /it/team-setup)
   from = "/it/*"
   to = "/index.html"
   status = 200
-  force = false
+  force = true
 
 [[redirects]]
   # SPA catch-all: serve index.html for any client-side route so direct visits don't 404
