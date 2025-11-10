@@ -71,6 +71,46 @@ const useGameState = () => {
     }
   }, [gameState, shouldSaveToStorage]);
 
+  // On mount: if URL contains ?quizId=, fetch the quiz data and initialize state for team setup
+  useEffect(() => {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const quizId = params.get('quizId');
+      if (quizId) {
+        (async () => {
+          try {
+            const res = await fetch(`/api/quiz-data/${quizId}`);
+            if (res.ok) {
+              const json = await res.json();
+              const loadedCategories = json.categories.map((c: any) => ({
+                ...c,
+                // ensure each question has an id and isAnswered flag
+                questions: c.questions.map((q: any) => ({ ...q, isAnswered: false }))
+              }));
+
+              const stateFromQuiz = {
+                ...gameState,
+                categories: loadedCategories,
+                showLandingPage: false,
+                showAISetup: false,
+                showTeamSetup: true,
+                currentQuizId: quizId
+              };
+              setGameState(stateFromQuiz as unknown as GameState);
+              // clean the query param to keep URL tidy
+              const prefix = getLangPrefix();
+              window.history.replaceState({}, '', `${prefix}/team-setup`);
+            }
+          } catch (e) {
+            console.error('Error loading quiz by id from URL', e);
+          }
+        })();
+      }
+    } catch (e) {
+      // ignore
+    }
+  }, []);
+
   // Avvia il gioco normale con un quiz casuale dal database
   const startGame = async () => {
     try {

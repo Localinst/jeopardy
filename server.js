@@ -494,7 +494,8 @@ app.get('/quiz/:id', async (req, res) => {
       console.warn(`/quiz/${quizId} requested but supabase is not configured`);
       return res.status(503).send('Service unavailable: database not configured');
     }
-    // Recupera quiz, categorie e domande dal DB
+
+    // Recupera quiz, categorie e domande dal DB (incluse le questions)
     const { data: quizData, error: quizError } = await supabase
       .from('quizzes')
       .select('id, title, created_at')
@@ -505,16 +506,53 @@ app.get('/quiz/:id', async (req, res) => {
 
     const { data: categoriesData, error: catError } = await supabase
       .from('categories')
-      .select('id, title, position')
+      .select(`id, title, position, questions(id, text, answer, points)`)
       .eq('quiz_id', quizId)
       .order('position', { ascending: true });
 
     if (catError) throw catError;
 
-    // Costruisci semplice HTML con meta tags per SEO
-    const title = quizData.title || 'Quiz Jeopardy';
-    const description = `Gioca al quiz: ${title}. Contiene ${categoriesData.length} categorie.`;
+    // Trasforma i dati nel formato consumabile dal client
+    const categories = (categoriesData || []).map(cat => ({
+      id: String(cat.id),
+      title: cat.title,
+      questions: (cat.questions || []).map(q => ({
+        id: String(q.id),
+        text: q.text,
+        answer: q.answer,
+        points: q.points,
+        isAnswered: false
+      }))
+    }));
+
+    // Costruisci uno stato minimale che il client userà per iniziare il flow delle squadre
+    const initialState = {
+      categories,
+      currentScore: 0,
+      selectedQuestion: null,
+      selectedCategory: null,
+      isEditMode: false,
+      showLandingPage: false,
+      showAISetup: false,
+      showTeamSetup: true,
+      teams: [
+        { id: '1', name: 'Team 1', color: '#ef4444', score: 0 },
+        { id: '2', name: 'Team 2', color: '#3b82f6', score: 0 }
+      ],
+      currentTeamIndex: 0,
+      currentQuizId: quizId
+    };
+
+    // Serve an HTML page that sets localStorage then redirects to the SPA team setup
     const url = `${req.protocol}://${req.get('host')}${req.originalUrl}`;
+    const title = quizData.title || 'Quiz Jeopardy';
+    const description = `Play the quiz: ${title}. Contains ${categories.length} categories.`;
+
+    // Determine language prefix from original URL (if any)
+    const langPrefixMatch = req.originalUrl.match(/^\/(en|it)(?:\/|$)/);
+    const langPrefix = langPrefixMatch ? `/${langPrefixMatch[1]}` : '';
+
+    const redirectPath = `${langPrefix}/team-setup`;
 
     const html = `<!doctype html>
     <html>
@@ -525,13 +563,21 @@ app.get('/quiz/:id', async (req, res) => {
         <meta property="og:title" content="${title}" />
         <meta property="og:description" content="${description}" />
         <meta property="og:url" content="${url}" />
+        <meta name="robots" content="index, follow" />
+        <script>
+          // Inject the quiz state into localStorage so the SPA can pick it up
+          try {
+            const state = ${JSON.stringify(initialState)};
+            localStorage.setItem('jeopardyGameState', JSON.stringify(state));
+            // Redirect to the SPA team setup which will read the saved state
+            window.location.replace('${redirectPath}');
+          } catch(e) {
+            console.error('Error restoring quiz state', e);
+          }
+        </script>
       </head>
       <body>
-        <h1>${title}</h1>
-        <p>${description}</p>
-        <ul>
-          ${categoriesData.map(cat => `<li>${cat.position}. ${cat.title}</li>`).join('')}
-        </ul>
+        <p>Loading quiz... If you are not redirected, <a href="/">click here</a>.</p>
       </body>
     </html>`;
 
@@ -577,6 +623,49 @@ app.get('/sitemap.xml', async (req, res) => {
   } catch (error) {
     console.error('Errore generazione sitemap dinamica:', error);
     res.status(500).send('Errore interno');
+  }
+});
+
+// API endpoint: return quiz data as JSON for SPA consumption
+app.get('/api/quiz-data/:id', async (req, res) => {
+  const quizId = req.params.id;
+  try {
+    if (!supabase) {
+      console.warn(`/api/quiz-data/${quizId} requested but supabase is not configured`);
+      return res.status(503).json({ error: 'database not configured' });
+    }
+
+    const { data: quizData, error: quizError } = await supabase
+      .from('quizzes')
+      .select('id, title, created_at')
+      .eq('id', quizId)
+      .single();
+
+    if (quizError || !quizData) return res.status(404).json({ error: 'Quiz not found' });
+
+    const { data: categoriesData, error: catError } = await supabase
+      .from('categories')
+      .select(`id, title, position, questions(id, text, answer, points)`)
+      .eq('quiz_id', quizId)
+      .order('position', { ascending: true });
+
+    if (catError) throw catError;
+
+    const categories = (categoriesData || []).map(cat => ({
+      id: String(cat.id),
+      title: cat.title,
+      questions: (cat.questions || []).map(q => ({
+        id: String(q.id),
+        text: q.text,
+        answer: q.answer,
+        points: q.points
+      }))
+    }));
+
+    res.json({ id: quizId, title: quizData.title, categories });
+  } catch (error) {
+    console.error('Error fetching quiz data:', error);
+    res.status(500).json({ error: 'internal error' });
   }
 });
 
