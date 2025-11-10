@@ -17,4 +17,25 @@
   "try_again": "Riprova",
   "tried_multiple": "Hai provato più volte. Prova a cambiare le categorie o riprova più tardi.",
   "category_placeholder": "Inserisci la categoria {{n}}"
+
+  ,
+  "team_setup": {
+    "title": "Configura le Squadre",
+    "subtitle": "Crea da 2 a 5 squadre che si sfideranno nel quiz Jeopardy!",
+    "add_team_error": "Non puoi aggiungere più di 5 squadre",
+    "min_teams_error": "Ci devono essere almeno 2 squadre",
+    "team_name_placeholder": "Nome Squadra {{n}}",
+    "how_to_play": {
+      "title": "Come si gioca",
+      "list": [
+        "Ogni squadra gioca a turno",
+        "A ogni turno, una squadra sceglie una casella dalla griglia",
+        "Se la risposta è corretta, il punteggio viene aggiunto alla squadra",
+        "Se la risposta è sbagliata, il turno passa alla squadra successiva",
+        "Vince la squadra con il punteggio più alto alla fine del gioco"
+      ]
+    },
+    "back": "Indietro",
+    "start": "Inizia il Gioco"
+  }
 }

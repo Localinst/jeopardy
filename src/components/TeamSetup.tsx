@@ -36,10 +36,22 @@ const TeamSetup: React.FC<TeamSetupProps> = ({ onTeamsCreated, onCancel }) => {
   const { t } = useTranslation();
   const [teams, setTeams] = useState<Team[]>(DEFAULT_TEAMS);
   const [error, setError] = useState('');
-
+  const {  i18n } = useTranslation();
+const changeLanguage = (lng: string) => {
+    i18n.changeLanguage(lng);
+    // update URL to include language prefix for better indexing
+    try {
+      const path = window.location.pathname.replace(/^(\/it|\/en)/, '');
+      const newPath = `/${lng}${path}`;
+      window.history.replaceState({}, '', newPath);
+      document.documentElement.lang = lng;
+    } catch (e) {
+      // ignore
+    }
+  };
   const addTeam = () => {
     if (teams.length >= 5) {
-      setError('Non puoi aggiungere più di 5 squadre');
+      setError(t('team_setup.add_team_error'));
       return;
     }
     
@@ -60,7 +72,7 @@ const TeamSetup: React.FC<TeamSetupProps> = ({ onTeamsCreated, onCancel }) => {
 
   const removeTeam = () => {
     if (teams.length <= 2) {
-      setError('Ci devono essere almeno 2 squadre');
+      setError(t('team_setup.min_teams_error'));
       return;
     }
     
@@ -101,16 +113,35 @@ const TeamSetup: React.FC<TeamSetupProps> = ({ onTeamsCreated, onCancel }) => {
         <link rel="alternate" hrefLang="en" href={`${SITE_URL}/en/team-setup`} />
         <link rel="alternate" hrefLang="it" href={`${SITE_URL}/it/team-setup`} />
       </Helmet>
+       <div className="absolute top-4 right-4 flex items-center gap-2" role="navigation" aria-label="Language selector">
+        <button
+          onClick={() => changeLanguage('en')}
+          title="English"
+          aria-label="English"
+          className="px-4 py-2 rounded-md bg-black/30 hover:bg-black/40 text-sm"
+        >
+          <span className="mr-2">🇬🇧</span> EN
+        </button>
+        <button
+          onClick={() => changeLanguage('it')}
+          title="Italiano"
+          aria-label="Italiano"
+          className="px-4 py-2 rounded-md bg-black/30 hover:bg-black/40 text-sm"
+        >
+          <span className="mr-2">🇮🇹</span> IT
+        </button>
+      </div>
+
       <div className="bg-blue-900 border border-blue-800 rounded-lg shadow-xl max-w-2xl w-full p-6">
-        <div className="flex items-center justify-center mb-6">
+          <div className="flex items-center justify-center mb-6">
           <Users className="h-8 w-8 text-yellow-400 mr-3" />
           <h2 className="text-3xl font-bold text-yellow-400 text-center">
-            Configura le Squadre
+            {t('team_setup.title')}
           </h2>
         </div>
         
         <p className="text-blue-300 mb-6 text-center">
-          Crea da 2 a 5 squadre che si sfideranno nel quiz Jeopardy!
+          {t('team_setup.subtitle')}
         </p>
 
         {error && (
@@ -130,7 +161,7 @@ const TeamSetup: React.FC<TeamSetupProps> = ({ onTeamsCreated, onCancel }) => {
               <Minus size={20} />
             </button>
             
-            <span className="text-xl font-bold">{teams.length} Squadre</span>
+            <span className="text-xl font-bold">{teams.length} Squads</span>
             
             <button 
               type="button" 
@@ -158,7 +189,7 @@ const TeamSetup: React.FC<TeamSetupProps> = ({ onTeamsCreated, onCancel }) => {
                   type="text"
                   value={team.name}
                   onChange={(e) => updateTeamName(index, e.target.value)}
-                  placeholder={`Nome Squadra ${index + 1}`}
+                  placeholder={t('team_setup.team_name_placeholder', { n: index + 1 })}
                   className="w-40 p-2 rounded-md bg-blue-800 border border-blue-700 text-white"
                   required
                 />
@@ -187,14 +218,12 @@ const TeamSetup: React.FC<TeamSetupProps> = ({ onTeamsCreated, onCancel }) => {
           <div className="mt-8 bg-yellow-500/10 p-4 rounded-md">
             <h3 className="text-yellow-400 flex items-center mb-2">
               <Trophy className="h-5 w-5 mr-2" />
-              Come si gioca
+              {t('team_setup.how_to_play.title')}
             </h3>
             <ul className="text-blue-300 list-disc list-inside text-sm space-y-1">
-              <li>Ogni squadra gioca a turno</li>
-              <li>A ogni turno, una squadra sceglie una casella dalla griglia</li>
-              <li>Se la risposta è corretta, il punteggio viene aggiunto alla squadra</li>
-              <li>Se la risposta è sbagliata, il turno passa alla squadra successiva</li>
-              <li>Vince la squadra con il punteggio più alto alla fine del gioco</li>
+              {t('team_setup.how_to_play.list', { returnObjects: true }).map((line: string, idx: number) => (
+                <li key={idx}>{line}</li>
+              ))}
             </ul>
           </div>
 
@@ -204,7 +233,7 @@ const TeamSetup: React.FC<TeamSetupProps> = ({ onTeamsCreated, onCancel }) => {
               onClick={onCancel}
               className="px-5 py-2 bg-gray-700 text-white rounded-md hover:bg-gray-600 transition"
             >
-              Indietro
+              {t('team_setup.back')}
             </button>
             
             <button
@@ -212,7 +241,7 @@ const TeamSetup: React.FC<TeamSetupProps> = ({ onTeamsCreated, onCancel }) => {
               className="px-5 py-2 bg-yellow-500 text-blue-900 rounded-md hover:bg-yellow-400 transition font-bold flex items-center"
             >
               <Check className="h-5 w-5 mr-2" />
-              Inizia il Gioco
+              {t('team_setup.start')}
             </button>
           </div>
         </form>

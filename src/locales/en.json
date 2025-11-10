@@ -17,4 +17,25 @@
   "try_again": "Try again",
   "tried_multiple": "You've tried multiple times. Try changing the categories or try later.",
   "category_placeholder": "Enter category {{n}}"
+
+  ,
+  "team_setup": {
+    "title": "Configure Teams",
+    "subtitle": "Create 2 to 5 teams to compete in the Jeopardy quiz!",
+    "add_team_error": "You cannot add more than 5 teams",
+    "min_teams_error": "There must be at least 2 teams",
+    "team_name_placeholder": "Team Name {{n}}",
+    "how_to_play": {
+      "title": "How to play",
+      "list": [
+        "Each team takes turns",
+        "On each turn, a team selects a cell from the board",
+        "If the answer is correct, the points are added to the team",
+        "If the answer is wrong, the turn passes to the next team",
+        "The team with the highest score at the end wins"
+      ]
+    },
+    "back": "Back",
+    "start": "Start Game"
+  }
 }
