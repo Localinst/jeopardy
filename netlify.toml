@@ -53,6 +53,13 @@
   status = 200
   force = false
 
+[[redirects]]
+  # SPA catch-all: serve index.html for any client-side route so direct visits don't 404
+  from = "/*"
+  to = "/index.html"
+  status = 200
+  force = false
+
 # Optional: forward any other server endpoints under /server/* to Render
 [[redirects]]
   from = "/server/*"
