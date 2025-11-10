@@ -21,17 +21,18 @@
   status = 200
   force = true
 
-# Proxy quiz pages so crawlers can access server-rendered quiz pages
+# Serve SPA for quiz pages so the app always mounts (no static HTML from backend)
 [[redirects]]
   from = "/quiz/:id"
-  to = "https://jeopardy-b937.onrender.com/quiz/:id"
+  to = "/index.html"
   status = 200
-  force = true
+  force = false
 
 [[redirects]]
   # Serve the static English landing only at the exact /en root
+  # Serve the SPA for English root and subpaths so components always load (no static HTML)
   from = "/en"
-  to = "/en/index.html"
+  to = "/index.html"
   status = 200
   force = false
 
@@ -44,8 +45,9 @@
 
 [[redirects]]
   # Serve the static Italian landing only at the exact /it root
+  # Serve the SPA for Italian root and subpaths so components always load (no static HTML)
   from = "/it"
-  to = "/it/index.html"
+  to = "/index.html"
   status = 200
   force = false
 
