@@ -31,25 +31,25 @@
 [[redirects]]
   # Serve the SPA index for language routes so direct visits to /en/ or /it/ do not 404
   from = "/en/*"
-  to = "/index.html"
+  to = "/en/index.html"
   status = 200
   force = false
 
 [[redirects]]
   from = "/en"
-  to = "/index.html"
+  to = "/en/index.html"
   status = 200
   force = false
 
 [[redirects]]
   from = "/it/*"
-  to = "/index.html"
+  to = "/it/index.html"
   status = 200
   force = false
 
 [[redirects]]
   from = "/it"
-  to = "/index.html"
+  to = "/it/index.html"
   status = 200
   force = false
 
