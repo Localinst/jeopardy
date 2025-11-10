@@ -29,27 +29,30 @@
   force = true
 
 [[redirects]]
-  # Serve the SPA index for language routes so direct visits to /en/ or /it/ do not 404
-  from = "/en/*"
-  to = "/en/index.html"
-  status = 200
-  force = false
-
-[[redirects]]
+  # Serve the static English landing only at the exact /en root
   from = "/en"
   to = "/en/index.html"
   status = 200
   force = false
 
 [[redirects]]
-  from = "/it/*"
+  # Let the SPA handle any English subroutes so components load (e.g. /en/team-setup)
+  from = "/en/*"
+  to = "/index.html"
+  status = 200
+  force = false
+
+[[redirects]]
+  # Serve the static Italian landing only at the exact /it root
+  from = "/it"
   to = "/it/index.html"
   status = 200
   force = false
 
 [[redirects]]
-  from = "/it"
-  to = "/it/index.html"
+  # Let the SPA handle any Italian subroutes so components load (e.g. /it/team-setup)
+  from = "/it/*"
+  to = "/index.html"
   status = 200
   force = false
 
