@@ -24,7 +24,8 @@
 # Serve SPA for quiz pages so the app always mounts (no static HTML from backend)
 [[redirects]]
   from = "/quiz/:id"
-  to = "/index.html"
+  to = "https://jeopardy-b937.onrender.com/quiz/:id"
+
   status = 200
   force = false
 
