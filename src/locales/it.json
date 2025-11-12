@@ -37,5 +37,89 @@
     },
     "back": "Indietro",
     "start": "Inizia il Gioco"
+  },
+  "landing": {
+    "about_title": "Che cos'è",
+    "about_title_highlight": "Jeopardy AI Quiz?",
+    "about_p1": "Jeopardy AI Quiz è una piattaforma web che permette di creare, condividere e giocare quiz in stile Jeopardy generati automaticamente con intelligenza artificiale. È pensata per insegnanti, organizzatori di quiz, serate tra amici e chiunque desideri testare le proprie conoscenze in modo veloce e divertente.",
+    "about_p2": "La piattaforma supporta due lingue (italiano e inglese), permette la generazione di quiz tematici con categorie personalizzate e offre funzionalità per il gioco a squadre, il punteggio in tempo reale e la verifica tramite browser.",
+    "instant_creation": "Creazione istantanea",
+    "instant_creation_desc": "Genera interi quiz in pochi secondi senza sforzo manuale",
+    "features_title": "Caratteristiche principali",
+    "features_subtitle": "Tutto ciò che serve per creare quiz straordinari",
+    "feature_ai": {
+      "title": "Generazione AI",
+      "desc": "Crea interi quiz (5 categorie × 5 domande) in pochi secondi usando modelli di linguaggio avanzati"
+    },
+    "feature_teams": {
+      "title": "Gioco a squadre",
+      "desc": "Gestione di più squadre con punteggio live, rotazione dei turni e classifica in tempo reale"
+    },
+    "feature_sharing": {
+      "title": "Condivisione",
+      "desc": "Salva e condividi quiz con un link per riprendere la partita anche in momenti diversi"
+    },
+    "feature_multilang": {
+      "title": "Multilingua",
+      "desc": "Contenuti in italiano o inglese, con interfaccia completamente localizzata"
+    },
+    "feature_didactic": {
+      "title": "Modalità didattica",
+      "desc": "Perfetto per verifiche rapide, ripassi scolastici e attività innovative in classe"
+    },
+    "feature_quality": {
+      "title": "Qualità garantita",
+      "desc": "Ogni domanda ha una sola risposta corretta e difficoltà scalata appropriatamente"
+    },
+    "how_works_title": "Come funziona",
+    "how_works_desc": "Scegli le categorie o lascia che l'IA le suggerisca. Il sistema genera cinque categorie ognuna con cinque domande calibrate per difficoltà (100–500 punti).",
+    "step_1": "Seleziona lingua e categorie",
+    "step_2": "Clicca 'Crea AI Quiz'",
+    "step_3": "Configura le squadre",
+    "step_4": "Inizia a giocare!",
+    "benefits_title": "Perché scegliere",
+    "benefits_title_highlight": "Jeopardy AI Quiz",
+    "save_time": "Risparmia tempo",
+    "save_time_desc": "Prepara materiali didattici in minuti, non ore",
+    "save_time_details": "Da insegnanti, a organizzatori di eventi, tutti possono creare quiz professionali istantaneamente",
+    "benefit_1": "Risparmia tempo nella preparazione delle domande",
+    "benefit_2": "Mantieni alto il coinvolgimento degli studenti",
+    "benefit_3": "Materiali immediatamente riutilizzabili",
+    "benefit_4": "Perfetto per verifiche rapide e ripassi",
+    "benefit_5": "Team building per aziende",
+    "benefit_6": "Regole di qualità integrate",
+    "faq_title": "Domande Frequenti",
+    "faq_subtitle": "Tutto quello che devi sapere",
+    "faq_1_q": "Posso modificare le domande generate dall'IA?",
+    "faq_1_a": "Sì. Dopo la generazione puoi modificare testi, risposte e punteggi tramite l'editor integrato nella piattaforma.",
+    "faq_2_q": "È gratuito?",
+    "faq_2_a": "L'app offre funzionalità di base gratuite. Alcune funzionalità avanzate o integrazioni possono richiedere servizi esterni.",
+    "faq_3_q": "Posso esportare o salvare i quiz?",
+    "faq_3_a": "Sì: ogni quiz può essere salvato sul server e condiviso tramite link permanente per rigiocarlo o consentire ad altri di partecipare.",
+    "faq_4_q": "Quale lingua usare?",
+    "faq_4_a": "Puoi scegliere tra italiano e inglese. L'interfaccia si adatta automaticamente e i quiz vengono generati nella lingua selezionata.",
+    "faq_5_q": "Quanto tempo impiega la generazione?",
+    "faq_5_a": "Di solito pochi secondi. Il tempo dipende dalla complessità e dal carico del server, ma raramente supera i 30 secondi.",
+    "cta_title": "Pronto a iniziare?",
+    "cta_subtitle": "Crea il tuo primo quiz in pochi secondi e scopri quanto è facile organizzare un'esperienza di gioco memorabile",
+    "cta_button_1": "Inizia subito",
+    "cta_button_2": "Crea AI Quiz",
+    "footer_text": "Per richieste tecniche, integrazioni o proposte di collaborazione, contattaci o apri un'issue sul repository. Possiamo integrare con LMS e servizi esterni su richiesta."
+  },
+  "feedback": {
+    "title": "Invia un feedback",
+    "subtitle": "Aiutaci a migliorare con i tuoi suggerimenti",
+    "emailLabel": "Email (opzionale)",
+    "emailPlaceholder": "la_tua_email@esempio.com",
+    "messageLabel": "Messaggio",
+    "messagePlaceholder": "Condividi il tuo feedback o suggerimento...",
+    "characters": "caratteri",
+    "submit": "Invia feedback",
+    "sending": "Invio in corso...",
+    "success": "✓ Grazie! Il tuo feedback è stato ricevuto.",
+    "error": {
+      "general": "Si è verificato un errore. Riprova più tardi.",
+      "network": "Errore di rete. Verifica la connessione."
+    }
   }
 }

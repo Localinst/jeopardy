@@ -1,5 +1,5 @@
 import React from 'react';
-import { Home, Users } from 'lucide-react';
+import { Home, Users, Edit } from 'lucide-react';
 
 interface GameControlsProps {
   score: number;
@@ -23,7 +23,7 @@ const GameControls: React.FC<GameControlsProps> = ({
   onConfigureTeams,
 }) => {
   return (
-    <div className="bg-blue-950 text-white p-4 rounded-md shadow-md mb-6">
+    <div className="bg-blue-950 text-white p-4 rounded-md shadow-md ">
       <div className="flex flex-col md:flex-row justify-between items-center">
         
         <div className="flex flex-wrap gap-2 justify-center">
@@ -51,7 +51,17 @@ const GameControls: React.FC<GameControlsProps> = ({
             Configura Squadre
           </button>
           
-         
+          <button
+            onClick={onToggleEditMode}
+            className={`px-4 py-2 rounded font-semibold transition flex items-center ${
+              isEditMode
+                ? 'bg-yellow-500 hover:bg-yellow-400 text-blue-900'
+                : 'bg-purple-600 hover:bg-purple-500 text-white'
+            }`}
+          >
+            <Edit className="h-4 w-4 mr-1" />
+            {isEditMode ? 'Salva e Gioca' : 'Modalità Modifica'}
+          </button>
           
           
           

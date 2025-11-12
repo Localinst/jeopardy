@@ -37,5 +37,89 @@
     },
     "back": "Back",
     "start": "Start Game"
+  },
+  "landing": {
+    "about_title": "What is",
+    "about_title_highlight": "Jeopardy AI Quiz?",
+    "about_p1": "Jeopardy AI Quiz is a web platform that allows you to create, share, and play Jeopardy-style quizzes generated automatically with artificial intelligence. It's designed for teachers, quiz organizers, friends' gatherings, and anyone who wants to test their knowledge quickly and fun.",
+    "about_p2": "The platform supports two languages (Italian and English), allows the generation of themed quizzes with customized categories, and offers features for team play, real-time scoring, and browser verification.",
+    "instant_creation": "Instant creation",
+    "instant_creation_desc": "Generate entire quizzes in just a few seconds without manual effort",
+    "features_title": "Key Features",
+    "features_subtitle": "Everything you need to create amazing quizzes",
+    "feature_ai": {
+      "title": "AI Generation",
+      "desc": "Create entire quizzes (5 categories × 5 questions) in seconds using advanced language models"
+    },
+    "feature_teams": {
+      "title": "Team Play",
+      "desc": "Manage multiple teams with live scoring, turn rotation, and real-time leaderboard"
+    },
+    "feature_sharing": {
+      "title": "Sharing",
+      "desc": "Save and share quizzes with a link to resume gameplay at different times"
+    },
+    "feature_multilang": {
+      "title": "Multilingual",
+      "desc": "Content in Italian or English, with fully localized interface"
+    },
+    "feature_didactic": {
+      "title": "Didactic Mode",
+      "desc": "Perfect for quick assessments, study reviews, and innovative classroom activities"
+    },
+    "feature_quality": {
+      "title": "Quality Guaranteed",
+      "desc": "Every question has a single correct answer and appropriately scaled difficulty"
+    },
+    "how_works_title": "How it works",
+    "how_works_desc": "Choose categories or let the AI suggest them. The system generates five categories each with five questions calibrated for difficulty (100-500 points).",
+    "step_1": "Select language and categories",
+    "step_2": "Click 'Create AI Quiz'",
+    "step_3": "Configure teams",
+    "step_4": "Start playing!",
+    "benefits_title": "Why choose",
+    "benefits_title_highlight": "Jeopardy AI Quiz",
+    "save_time": "Save time",
+    "save_time_desc": "Prepare teaching materials in minutes, not hours",
+    "save_time_details": "From teachers to event organizers, everyone can create professional quizzes instantly",
+    "benefit_1": "Save time on question preparation",
+    "benefit_2": "Keep student engagement high",
+    "benefit_3": "Immediately reusable materials",
+    "benefit_4": "Perfect for quick assessments and reviews",
+    "benefit_5": "Team building for companies",
+    "benefit_6": "Integrated quality rules",
+    "faq_title": "Frequently Asked Questions",
+    "faq_subtitle": "Everything you need to know",
+    "faq_1_q": "Can I modify the AI-generated questions?",
+    "faq_1_a": "Yes. After generation you can edit text, answers, and points via the integrated editor on the platform.",
+    "faq_2_q": "Is it free?",
+    "faq_2_a": "The app offers basic features for free. Some advanced features or integrations may require external services.",
+    "faq_3_q": "Can I export or save quizzes?",
+    "faq_3_a": "Yes: each quiz can be saved to the server and shared via a permanent link to replay or allow others to participate.",
+    "faq_4_q": "Which language to use?",
+    "faq_4_a": "You can choose between Italian and English. The interface adapts automatically and quizzes are generated in the selected language.",
+    "faq_5_q": "How long does generation take?",
+    "faq_5_a": "Usually just a few seconds. The time depends on complexity and server load, but rarely exceeds 30 seconds.",
+    "cta_title": "Ready to get started?",
+    "cta_subtitle": "Create your first quiz in seconds and discover how easy it is to organize a memorable gaming experience",
+    "cta_button_1": "Get started now",
+    "cta_button_2": "Create AI Quiz",
+    "footer_text": "For technical requests, integrations, or collaboration proposals, contact us or open an issue on the repository. We can integrate with LMS and external services on request."
+  },
+  "feedback": {
+    "title": "Send feedback",
+    "subtitle": "Help us improve with your suggestions",
+    "emailLabel": "Email (optional)",
+    "emailPlaceholder": "your_email@example.com",
+    "messageLabel": "Message",
+    "messagePlaceholder": "Share your feedback or suggestion...",
+    "characters": "characters",
+    "submit": "Send feedback",
+    "sending": "Sending...",
+    "success": "✓ Thank you! Your feedback has been received.",
+    "error": {
+      "general": "An error occurred. Please try again later.",
+      "network": "Network error. Check your connection."
+    }
   }
 }

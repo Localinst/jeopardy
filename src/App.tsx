@@ -6,6 +6,7 @@ import GameControls from './components/GameControls';
 import LandingPage from './components/LandingPage';
 import AIGameSetup from './components/AIGameSetup';
 import TeamSetup from './components/TeamSetup';
+import FeedbackForm from './components/FeedbackForm';
 import useGameState from './hooks/useGameState';
 import { Gamepad2, Users, ChevronRight } from 'lucide-react';
 
@@ -152,6 +153,11 @@ function App() {
             onUpdateCategory={updateCategory}
             onUpdateQuestion={updateQuestion}
           />
+        </div>
+
+        {/* Feedback Form */}
+        <div className="mt-20 mb-12">
+          <FeedbackForm />
         </div>
 
         {/* Instructions */}
