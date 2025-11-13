@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Mail, Send, CheckCircle } from 'lucide-react';
 
-const WEBHOOK_URL = import.meta.env.VITE_DISCORD_WEBHOOK_URL || '';
+const WEBHOOK_URL = import.meta.env.DISCORD_WEBHOOK_URL || '';
 
 const FeedbackForm: React.FC = () => {
   const [email, setEmail] = useState('');
