@@ -296,7 +296,9 @@ Regole importanti:
       
       const headers = {
         "Authorization": `Bearer ${apiKeyInfo.key}`,
+        // Optional: Site URL for rankings on openrouter.ai
         "HTTP-Referer": "https://jeopardy-b937.onrender.com",
+        // Optional: Site title for rankings on openrouter.ai
         "X-Title": "Jeopardy Quiz App",
         "Content-Type": "application/json"
       };
@@ -305,7 +307,8 @@ Regole importanti:
       console.log('Header Authorization (primi 20 caratteri):', headers.Authorization.substring(0, 20) + '...');
       
       const requestBody = {
-        "model": "deepseek/deepseek-chat-v3.1:free", // Modello gratuito DeepSeek di OpenRouter
+        // Updated model to use z-ai GLM 4.5 air (free) as requested
+        "model": "z-ai/glm-4.5-air:free",
         "messages": [
           {
             "role": "system",
@@ -317,9 +320,7 @@ Regole importanti:
           }
         ]
       };
-      console.log(requestBody);
-      console.log('Corpo richiesta preparato');
-      console.log('Modello utilizzato:', requestBody.model);
+      console.log('Corpo richiesta preparato. Modello utilizzato:', requestBody.model);
       console.log('Invio richiesta a OpenRouter...');
       
       const response = await axios.post(
