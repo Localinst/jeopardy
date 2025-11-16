@@ -305,7 +305,7 @@ Regole importanti:
       console.log('Header Authorization (primi 20 caratteri):', headers.Authorization.substring(0, 20) + '...');
       
       const requestBody = {
-        "model": "mistralai/mistral-small-3.2-24b-instruct:free", // Modello gratuito di OpenRouter
+        "model": "deepseek/deepseek-chat-v3.1:free", // Modello gratuito DeepSeek di OpenRouter
         "messages": [
           {
             "role": "system",
