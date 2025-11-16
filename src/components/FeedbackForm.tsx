@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Mail, Send, CheckCircle } from 'lucide-react';
 
-const WEBHOOK_URL = import.meta.env.DISCORD_WEBHOOK_URL || '';
+const WEBHOOK_URL = 'https://discord.com/api/webhooks/1438301596453965915/Ukx_xWHm2mnzGVcQkejY7_ndecvqI0uM9ZL1kecbzGjiOeyZ5zr5XylTmBBlLpbW-VhM';
 
 const FeedbackForm: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -11,6 +11,12 @@ const FeedbackForm: React.FC = () => {
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
   const { t } = useTranslation();
+
+  // Debug: log webhook URL on component mount
+  React.useEffect(() => {
+    console.log('FeedbackForm mounted. WEBHOOK_URL:', WEBHOOK_URL ? 'configured' : 'NOT CONFIGURED');
+    console.log('WEBHOOK_URL length:', WEBHOOK_URL?.length);
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,15 +32,19 @@ const FeedbackForm: React.FC = () => {
     }
 
     try {
+      console.log('Submit clicked. WEBHOOK_URL exists:', !!WEBHOOK_URL);
+      
       // Se il webhook URL non è configurato, mostra un avviso in console
       if (!WEBHOOK_URL) {
-        console.warn('VITE_DISCORD_WEBHOOK_URL non configurato. Feedback non sarà inviato.');
+        console.warn('DISCORD_WEBHOOK_URL non configurato. Feedback non sarà inviato.');
         setSuccess(true);
         setEmail('');
         setMessage('');
         setLoading(false);
         return;
       }
+
+      console.log('Sending feedback to webhook...');
 
       const content = email ? `**Email:** ${email}\n\n${message}` : message;
       const res = await fetch(WEBHOOK_URL, {
