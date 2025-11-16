@@ -15,8 +15,7 @@ const FeedbackForm: React.FC = () => {
   // Debug: log webhook URL on component mount
   React.useEffect(() => {
     console.log('FeedbackForm mounted. WEBHOOK_URL:', WEBHOOK_URL ? 'configured' : 'NOT CONFIGURED');
-    console.log('WEBHOOK_URL length:', WEBHOOK_URL?.length);
-  }, []);
+    }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
