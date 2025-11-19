@@ -227,13 +227,13 @@ app.post('/generate-quiz', async (req, res) => {
   const difficultyGuidanceEn = {
     easy: 'Generate questions that are simple and accessible to a general audience. Focus on well-known facts and common knowledge. Use straightforward language and avoid obscure references.',
     medium: 'Generate questions with moderate difficulty. Include both common and less common knowledge. Questions should challenge players but remain fair and solvable by someone with general knowledge in the category.',
-    hard: 'Generate questions that are challenging and require specialized knowledge. Focus on less common facts, nuanced details, and deep expertise in each category. Use sophisticated vocabulary and complex concepts.'
+    hard: 'Generate questions that are more challenging than medium. Include some specialized knowledge and deeper facts, but keep them reasonably solvable. Use more sophisticated vocabulary but avoid extremely obscure references.'
   };
   
   const difficultyGuidanceIt = {
     easy: 'Genera domande semplici e accessibili a un pubblico generale. Focalizzati su fatti ben noti e conoscenze comuni. Usa un linguaggio diretto e evita riferimenti oscuri.',
     medium: 'Genera domande di difficoltà moderata. Includi sia conoscenze comuni che meno comuni. Le domande dovrebbero sfidare i giocatori ma rimanere eque e risolvibili da chi ha conoscenza generale della categoria.',
-    hard: 'Genera domande impegnative che richiedono conoscenza specializzata. Focalizzati su fatti meno comuni, dettagli sfumati e profonda competenza in ogni categoria. Usa vocabolario sofisticato e concetti complessi.'
+    hard: 'Genera domande più impegnative della difficoltà media. Includi conoscenza specializzata e fatti più approfonditi, ma mantenili ragionevolmente risolvibili. Usa vocabolario più sofisticato ma evita riferimenti estremamente oscuri.'
   };
 
   const difficultyGuidance = language === 'en' ? difficultyGuidanceEn[difficultyLevel] : difficultyGuidanceIt[difficultyLevel];
