@@ -1,18 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <!-- Homepage italiana -->
   <url>
     <loc>https://jeopardyonline.it/</loc>
+    <lastmod>2025-11-19T00:00:00Z</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="it" href="https://jeopardyonline.it/it/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://jeopardyonline.it/en/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://jeopardyonline.it/"/>
   </url>
+  
+  <!-- Versione inglese -->
   <url>
     <loc>https://jeopardyonline.it/en/</loc>
+    <lastmod>2025-11-19T00:00:00Z</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="it" href="https://jeopardyonline.it/it/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://jeopardyonline.it/en/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://jeopardyonline.it/"/>
   </url>
+  
+  <!-- Versione italiana esplicita -->
   <url>
     <loc>https://jeopardyonline.it/it/</loc>
+    <lastmod>2025-11-19T00:00:00Z</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="it" href="https://jeopardyonline.it/it/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://jeopardyonline.it/en/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://jeopardyonline.it/"/>
   </url>
 </urlset>

@@ -4,7 +4,7 @@
   "start_random": "Gioca con Categorie Casuali",
   "create_ai": "Crea Quiz con IA",
   "loading": "Caricamento...",
-  "description": "Gioca a un gioco di quiz in stile Jeopardy generato con l'IA — crea quiz personalizzati, gioca in squadra e metti alla prova le tue conoscenze in italiano o inglese."
+  "description": "Gioca a un gioco di quiz in stile Jeopardy generato con l'IA - crea quiz personalizzati, gioca in squadra e metti alla prova le tue conoscenze in italiano o inglese."
   ,
   "ai_generator_title": "Generatore Quiz IA",
   "ai_instructions": "Inserisci 5 categorie e la nostra IA genererà domande e risposte per ciascuna.",

@@ -4,7 +4,7 @@
   "start_random": "Play with Random Categories",
   "create_ai": "Create AI Quiz",
   "loading": "Loading...",
-  "description": "Play a Jeopardy-style quiz game powered by AI — create custom quizzes, play with teams, and test your knowledge in English or Italian."
+  "description": "Play a Jeopardy-style quiz game powered by AI - create custom quizzes, play with teams, and test your knowledge in English or Italian."
   ,
   "ai_generator_title": "AI Quiz Generator",
   "ai_instructions": "Enter 5 categories and the AI will generate questions and answers for each.",

@@ -144,9 +144,9 @@ const QuestionModal: React.FC<QuestionModalProps> = ({
       <Helmet>
         {/* Canonical: compose from SITE_URL and current path (if using client routes, ensure routes reflect shareable URLs) */}
         <link rel="canonical" href={`${SITE_URL}${typeof window !== 'undefined' ? window.location.pathname : '/'}`} />
-        <title>{`${category.title} — ${question.points} pts`}</title>
+        <title>{`${category.title} - ${question.points} pts`}</title>
         <meta name="description" content={question.text} />
-        <meta property="og:title" content={`${category.title} — ${question.points} pts`} />
+        <meta property="og:title" content={`${category.title} - ${question.points} pts`} />
         <meta property="og:description" content={question.text} />
         <link rel="alternate" hrefLang="en" href={`${SITE_URL}${typeof window !== 'undefined' ? '/en' + window.location.pathname : '/en'}`} />
         <link rel="alternate" hrefLang="it" href={`${SITE_URL}${typeof window !== 'undefined' ? '/it' + window.location.pathname : '/it'}`} />
