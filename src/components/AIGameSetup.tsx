@@ -21,6 +21,7 @@ const AIIcon = () => (
 const AIGameSetup: React.FC<AIGameSetupProps> = ({ onGameCreated, onCancel }) => {
   const { t, i18n } = useTranslation();
   const [topics, setTopics] = useState<string[]>(['', '', '', '', '']);
+  const [difficulty, setDifficulty] = useState<'easy' | 'medium' | 'hard'>('medium');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [errorDetails, setErrorDetails] = useState('');
@@ -47,9 +48,9 @@ const AIGameSetup: React.FC<AIGameSetupProps> = ({ onGameCreated, onCancel }) =>
     }, 500);
 
     try {
-  // Chiamata all'API tramite il nostro servizio (passiamo la lingua corrente)
+  // Chiamata all'API tramite il nostro servizio (passiamo la lingua corrente e la difficoltà)
   const currentLang = i18n?.language || 'it';
-  const result = await generateCategoriesWithAI(topics, currentLang);
+  const result = await generateCategoriesWithAI(topics, currentLang, difficulty);
   const categoriesData = result.categories;
   const quizId = result.quizId || null;
       
@@ -183,6 +184,31 @@ const AIGameSetup: React.FC<AIGameSetupProps> = ({ onGameCreated, onCancel }) =>
               />
             </div>
           ))}
+
+          {/* Difficulty selection */}
+          <div className="mt-6 p-4 bg-blue-800 rounded-md border border-blue-700">
+            <label className="block text-blue-300 mb-3 font-semibold">
+              {t('difficulty_level') || 'Difficoltà domande'}
+            </label>
+            <div className="flex gap-4">
+              {(['easy', 'medium', 'hard'] as const).map((level) => (
+                <label key={level} className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="difficulty"
+                    value={level}
+                    checked={difficulty === level}
+                    onChange={(e) => setDifficulty(e.target.value as 'easy' | 'medium' | 'hard')}
+                    disabled={isLoading}
+                    className="w-4 h-4"
+                  />
+                  <span className="text-blue-200 capitalize">
+                    {t(`difficulty_${level}`) || level}
+                  </span>
+                </label>
+              ))}
+            </div>
+          </div>
 
           {isLoading && (
             <div className="mt-4">

@@ -16,9 +16,11 @@
   "please_fill_all": "Per favore inserisci tutte e 5 le categorie.",
   "try_again": "Riprova",
   "tried_multiple": "Hai provato più volte. Prova a cambiare le categorie o riprova più tardi.",
-  "category_placeholder": "Inserisci la categoria {{n}}"
-
-  ,
+  "category_placeholder": "Inserisci la categoria {{n}}",
+  "difficulty_level": "Difficoltà domande",
+  "difficulty_easy": "Facile",
+  "difficulty_medium": "Medio",
+  "difficulty_hard": "Difficile",
   "team_setup": {
     "title": "Configura le Squadre",
     "subtitle": "Crea da 2 a 5 squadre che si sfideranno nel quiz Jeopardy!",

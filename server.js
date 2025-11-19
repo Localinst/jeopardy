@@ -206,8 +206,9 @@ app.get('/random-quiz', async (req, res) => {
 });
 
 app.post('/generate-quiz', async (req, res) => {
-  const { categories, lang } = req.body; // array da 5 categorie, optional lang
+  const { categories, lang, difficulty } = req.body; // array da 5 categorie, optional lang, optional difficulty
   const language = (lang && typeof lang === 'string' && lang.startsWith('en')) ? 'en' : 'it';
+  const difficultyLevel = difficulty && ['easy', 'medium', 'hard'].includes(difficulty) ? difficulty : 'medium';
 
   // Verifica se ci sono categorie valide
   if (!categories || !Array.isArray(categories) || categories.length === 0) {
@@ -222,8 +223,26 @@ app.post('/generate-quiz', async (req, res) => {
     ? "You are an expert quiz writer. Produce clear Jeopardy-style questions and concise answers in English. Respond ONLY with valid JSON according to the requested schema."
     : "Sei un esperto nella creazione di quiz interattivi. Crea domande chiare in stile Jeopardy e risposte concise in italiano. Rispondi SOLO con JSON valido secondo lo schema richiesto.";
 
+  // Difficulty guidance text with general difficulty instructions
+  const difficultyGuidanceEn = {
+    easy: 'Generate questions that are simple and accessible to a general audience. Focus on well-known facts and common knowledge. Use straightforward language and avoid obscure references.',
+    medium: 'Generate questions with moderate difficulty. Include both common and less common knowledge. Questions should challenge players but remain fair and solvable by someone with general knowledge in the category.',
+    hard: 'Generate questions that are challenging and require specialized knowledge. Focus on less common facts, nuanced details, and deep expertise in each category. Use sophisticated vocabulary and complex concepts.'
+  };
+  
+  const difficultyGuidanceIt = {
+    easy: 'Genera domande semplici e accessibili a un pubblico generale. Focalizzati su fatti ben noti e conoscenze comuni. Usa un linguaggio diretto e evita riferimenti oscuri.',
+    medium: 'Genera domande di difficoltà moderata. Includi sia conoscenze comuni che meno comuni. Le domande dovrebbero sfidare i giocatori ma rimanere eque e risolvibili da chi ha conoscenza generale della categoria.',
+    hard: 'Genera domande impegnative che richiedono conoscenza specializzata. Focalizzati su fatti meno comuni, dettagli sfumati e profonda competenza in ogni categoria. Usa vocabolario sofisticato e concetti complessi.'
+  };
+
+  const difficultyGuidance = language === 'en' ? difficultyGuidanceEn[difficultyLevel] : difficultyGuidanceIt[difficultyLevel];
+
   const userPrompt = language === 'en'
-    ? `The user provided these 5 categories for a Jeopardy-style quiz: ${categories.join(', ')}. Generate a Jeopardy quiz using these 5 categories. Each category must contain 5 questions with point values 100-500. 100-point questions should be easy, 500-point questions should be very hard.
+    ? `The user provided these 5 categories for a Jeopardy-style quiz: ${categories.join(', ')}. Generate a Jeopardy quiz using these 5 categories. Each category must contain 5 questions with point values 100-500.
+
+DIFFICULTY LEVEL: ${difficultyLevel.toUpperCase()}
+${difficultyGuidance}
 
 Important rules:
 1. Answers MUST NOT be contained in the questions.
@@ -247,7 +266,10 @@ Important rules:
     }
   ]
 }`
-    : `L'utente ha fornito queste 5 categorie per un quiz in stile Jeopardy!: ${categories.join(', ')}. Genera un quiz Jeopardy usando queste 5 categorie. Ogni categoria deve contenere 5 domande con punteggi 100-500. Le domande da 100 devono essere facili, quelle da 500 molto difficili.
+    : `L'utente ha fornito queste 5 categorie per un quiz in stile Jeopardy!: ${categories.join(', ')}. Genera un quiz Jeopardy usando queste 5 categorie. Ogni categoria deve contenere 5 domande con punteggi 100-500.
+
+LIVELLO DI DIFFICOLTÀ: ${difficultyLevel.toUpperCase()}
+${difficultyGuidance}
 
 Regole importanti:
 1. Le risposte NON devono essere contenute nelle domande.

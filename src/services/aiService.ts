@@ -46,7 +46,7 @@ const extractValidJson = (text: string): any => {
 /**
  * Trasforma i temi forniti dall'utente in categorie complete utilizzando il backend
  */
-export const generateCategoriesWithAI = async (topics: string[], lang?: string): Promise<{ categories: Category[]; quizId?: string | null }> => {
+export const generateCategoriesWithAI = async (topics: string[], lang?: string, difficulty?: 'easy' | 'medium' | 'hard'): Promise<{ categories: Category[]; quizId?: string | null }> => {
   try {
     console.log('Chiamata al server backend per generazione quiz in corso...');
     
@@ -60,7 +60,7 @@ export const generateCategoriesWithAI = async (topics: string[], lang?: string):
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({ categories: topics, lang: lang || 'it' })
+        body: JSON.stringify({ categories: topics, lang: lang || 'it', difficulty: difficulty || 'medium' })
       });
 
       console.log('Stato risposta API:', response.status, response.statusText);

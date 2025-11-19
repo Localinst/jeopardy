@@ -16,9 +16,11 @@
   "please_fill_all": "Please fill in all 5 categories.",
   "try_again": "Try again",
   "tried_multiple": "You've tried multiple times. Try changing the categories or try later.",
-  "category_placeholder": "Enter category {{n}}"
-
-  ,
+  "category_placeholder": "Enter category {{n}}",
+  "difficulty_level": "Questions Difficulty",
+  "difficulty_easy": "Easy",
+  "difficulty_medium": "Medium",
+  "difficulty_hard": "Hard",
   "team_setup": {
     "title": "Configure Teams",
     "subtitle": "Create 2 to 5 teams to compete in the Jeopardy quiz!",
