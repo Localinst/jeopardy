@@ -538,10 +538,25 @@ app.get('/quiz/:id', async (req, res) => {
       currentQuizId: quizId
     };
 
-    // Serve an HTML page that sets localStorage then redirects to the SPA team setup
+    // Build SEO-friendly HTML page with quiz data for indexing by search engines
     const url = `${req.protocol}://${req.get('host')}${req.originalUrl}`;
     const title = quizData.title || 'Quiz Jeopardy';
-    const description = `Play the quiz: ${title}. Contains ${categories.length} categories.`;
+    const description = `Play the quiz: ${title}. Contains ${categories.length} categories with questions on: ${categories.map(c => c.title).join(', ')}.`;
+    
+    // Create a JSON-LD structured data for SEO
+    const structuredData = {
+      "@context": "https://schema.org",
+      "@type": "EducationalQuiz",
+      "name": title,
+      "description": description,
+      "url": url,
+      "datePublished": quizData.created_at,
+      "numberOfQuestions": categories.reduce((sum, cat) => sum + cat.questions.length, 0),
+      "about": categories.map(cat => ({
+        "@type": "Thing",
+        "name": cat.title
+      }))
+    };
 
     // Determine language prefix from original URL (if any)
     const langPrefixMatch = req.originalUrl.match(/^\/(en|it)(?:\/|$)/);
@@ -550,15 +565,22 @@ app.get('/quiz/:id', async (req, res) => {
     const redirectPath = `${langPrefix}/team-setup`;
 
     const html = `<!doctype html>
-    <html>
+    <html lang="it">
       <head>
         <meta charset="utf-8" />
+        <meta http-equiv="refresh" content="0;url=${redirectPath}" />
         <title>${title}</title>
         <meta name="description" content="${description}" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta property="og:title" content="${title}" />
         <meta property="og:description" content="${description}" />
         <meta property="og:url" content="${url}" />
+        <meta property="og:type" content="website" />
         <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="${url}" />
+        <script type="application/ld+json">
+          ${JSON.stringify(structuredData)}
+        </script>
         <script>
           // Inject the quiz state into localStorage so the SPA can pick it up
           try {
@@ -572,7 +594,9 @@ app.get('/quiz/:id', async (req, res) => {
         </script>
       </head>
       <body>
-        <p>Loading quiz... If you are not redirected, <a href="/">click here</a>.</p>
+        <h1>${title}</h1>
+        <p>${description}</p>
+        <p>Loading quiz... If you are not redirected, <a href="${redirectPath}">click here</a>.</p>
       </body>
     </html>`;
 
