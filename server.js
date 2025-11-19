@@ -308,7 +308,7 @@ Regole importanti:
       
       const requestBody = {
        
-        "model": "z-ai/glm-4.5-air:free",
+        "model": "openrouter/sherlock-dash-alpha",
         "messages": [
           {
             "role": "system",
