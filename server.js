@@ -330,7 +330,7 @@ Regole importanti:
       
       const requestBody = {
        
-        "model": "openrouter/sherlock-dash-alpha",
+        "model": "x-ai/grok-4.1-fast:free",
         "messages": [
           {
             "role": "system",
