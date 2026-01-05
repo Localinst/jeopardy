@@ -239,7 +239,7 @@ app.post('/generate-quiz', async (req, res) => {
   const difficultyGuidance = language === 'en' ? difficultyGuidanceEn[difficultyLevel] : difficultyGuidanceIt[difficultyLevel];
 
   const userPrompt = language === 'en'
-    ? `The user provided these 5 categories for a Jeopardy-style quiz: ${categories.join(', ')}. Generate a Jeopardy quiz using these 5 categories. Each category must contain 5 questions with point values 100-500.
+    ? `The user provided these 5 categories for a Jeopardy-style quiz: ${categories.join(', ')}. Generate a Jeopardy quiz using these 5 categories. Each category must contain 5 questions with point values 100-500; Those worth 100 points should be the easiest, while those worth 500 points should be the most difficult.
 
 DIFFICULTY LEVEL: ${difficultyLevel.toUpperCase()}
 ${difficultyGuidance}
@@ -266,7 +266,7 @@ Important rules:
     }
   ]
 }`
-    : `L'utente ha fornito queste 5 categorie per un quiz in stile Jeopardy!: ${categories.join(', ')}. Genera un quiz Jeopardy usando queste 5 categorie. Ogni categoria deve contenere 5 domande con punteggi 100-500.
+    : `L'utente ha fornito queste 5 categorie per un quiz in stile Jeopardy!: ${categories.join(', ')}. Genera un quiz Jeopardy usando queste 5 categorie. Ogni categoria deve contenere 5 domande con punteggi 100-500, quelle da 100 più semplici e quelle da 500 più difficili.
 
 LIVELLO DI DIFFICOLTÀ: ${difficultyLevel.toUpperCase()}
 ${difficultyGuidance}
@@ -330,7 +330,7 @@ Regole importanti:
       
       const requestBody = {
        
-        "model": "openrouter/sherlock-dash-alpha",
+        "model": "mistralai/devstral-2512:free",
         "messages": [
           {
             "role": "system",
