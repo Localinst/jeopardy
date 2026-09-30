@@ -503,6 +503,11 @@ Regole importanti:
   res.json(generateFallbackData(categories, language));
 });
 
+function escapeHtml(str) {
+  if (typeof str !== 'string') return '';
+  return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+}
+
 // Endpoint per restituire una pagina pubblica per un quiz (SEO-friendly)
 app.get('/quiz/:id', async (req, res) => {
   const quizId = req.params.id;
@@ -563,7 +568,7 @@ app.get('/quiz/:id', async (req, res) => {
     // Build SEO-friendly HTML page with quiz data for indexing by search engines
     const url = `${req.protocol}://${req.get('host')}${req.originalUrl}`;
     const title = quizData.title || 'Quiz Jeopardy';
-    const description = `Play the quiz: ${title}. Contains ${categories.length} categories with questions on: ${categories.map(c => c.title).join(', ')}.`;
+    const description = `Gioca al quiz: ${title}. Contiene ${categories.length} categorie con domande su: ${categories.map(c => c.title).join(', ')}.`;
     
     // Create a JSON-LD structured data for SEO
     const structuredData = {
@@ -573,7 +578,7 @@ app.get('/quiz/:id', async (req, res) => {
       "description": description,
       "url": url,
       "datePublished": quizData.created_at,
-      "numberOfQuestions": categories.reduce((sum, cat) => sum + cat.questions.length, 0),
+      "numberOfQuestions": categories.reduce((sum, cat) => sum + (cat.questions ? cat.questions.length : 0), 0),
       "about": categories.map(cat => ({
         "@type": "Thing",
         "name": cat.title
@@ -590,41 +595,191 @@ app.get('/quiz/:id', async (req, res) => {
     <html lang="it">
       <head>
         <meta charset="utf-8" />
-        <meta http-equiv="refresh" content="0;url=${redirectPath}" />
         <link rel="icon" type="image/png" href="/og-image.png" />
-        <title>${title}</title>
-        <meta name="description" content="${description}" />
+        <title>${escapeHtml(title)} - Quiz Jeopardy Online</title>
+        <meta name="description" content="${escapeHtml(description)}" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <meta property="og:title" content="${title}" />
-        <meta property="og:description" content="${description}" />
-        <meta property="og:url" content="${url}" />
+        <meta property="og:title" content="${escapeHtml(title)}" />
+        <meta property="og:description" content="${escapeHtml(description)}" />
+        <meta property="og:url" content="${escapeHtml(url)}" />
         <meta property="og:type" content="website" />
         <meta property="og:image" content="https://jeopardyonline.it/og-image.png" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="${title}" />
-        <meta name="twitter:description" content="${description}" />
+        <meta name="twitter:title" content="${escapeHtml(title)}" />
+        <meta name="twitter:description" content="${escapeHtml(description)}" />
         <meta name="twitter:image" content="https://jeopardyonline.it/og-image.png" />
         <meta name="robots" content="index, follow" />
-        <link rel="canonical" href="${url}" />
+        <link rel="canonical" href="${escapeHtml(url)}" />
         <script type="application/ld+json">
           ${JSON.stringify(structuredData)}
         </script>
+        <style>
+          body {
+            margin: 0;
+            padding: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #091e42;
+            color: #ffffff;
+            min-height: 100vh;
+          }
+          .header-container {
+            text-align: center;
+            padding: 3rem 1rem 2rem 1rem;
+            max-width: 900px;
+            margin: 0 auto;
+          }
+          .logo-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #facc15;
+            margin: 0 0 0.5rem 0;
+          }
+          .subtitle {
+            color: #93c5fd;
+            font-size: 1.15rem;
+            margin-bottom: 2rem;
+            line-height: 1.5;
+          }
+          .play-btn {
+            display: inline-block;
+            background-color: #facc15;
+            color: #0f2b5c;
+            font-weight: 800;
+            font-size: 1.25rem;
+            padding: 1rem 2.5rem;
+            border-radius: 0.75rem;
+            text-decoration: none;
+            box-shadow: 0 4px 14px rgba(250, 204, 21, 0.4);
+            transition: transform 0.2s, background-color 0.2s;
+            cursor: pointer;
+            border: none;
+          }
+          .play-btn:hover {
+            background-color: #fde047;
+            transform: scale(1.03);
+          }
+          .main-container {
+            max-width: 1100px;
+            margin: 0 auto 3rem auto;
+            padding: 0 1rem;
+          }
+          .section-title {
+            color: #facc15;
+            text-align: center;
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+          }
+          .grid-categories {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+          }
+          .category-card {
+            background: rgba(255, 255, 255, 0.07);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 0.75rem;
+            padding: 1.25rem;
+            backdrop-filter: blur(8px);
+          }
+          .category-header {
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: #facc15;
+            margin-top: 0;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+          }
+          .questions-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+          }
+          .question-item {
+            background: rgba(0, 0, 0, 0.25);
+            border-radius: 0.5rem;
+            padding: 0.85rem;
+            margin-bottom: 0.75rem;
+            border-left: 3px solid #facc15;
+          }
+          .points-tag {
+            display: inline-block;
+            background: #1e3a8a;
+            color: #facc15;
+            font-weight: 700;
+            font-size: 0.85rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 0.25rem;
+            margin-bottom: 0.4rem;
+          }
+          .q-text {
+            font-size: 0.95rem;
+            line-height: 1.4;
+            margin-bottom: 0.4rem;
+            color: #f3f4f6;
+          }
+          .a-text {
+            font-size: 0.9rem;
+            color: #60a5fa;
+          }
+          .footer-info {
+            text-align: center;
+            padding: 2rem;
+            color: #93c5fd;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 3rem;
+          }
+          .footer-info a {
+            color: #facc15;
+            text-decoration: none;
+            font-weight: 600;
+          }
+        </style>
         <script>
-          // Inject the quiz state into localStorage so the SPA can pick it up
-          try {
-            const state = ${JSON.stringify(initialState)};
-            localStorage.setItem('jeopardyGameState', JSON.stringify(state));
-            // Redirect to the SPA team setup which will read the saved state
-            window.location.replace('${redirectPath}');
-          } catch(e) {
-            console.error('Error restoring quiz state', e);
+          function playQuiz() {
+            try {
+              const state = ${JSON.stringify(initialState)};
+              localStorage.setItem('jeopardyGameState', JSON.stringify(state));
+            } catch(e) {
+              console.error('Error setting quiz state', e);
+            }
+            window.location.href = '${redirectPath}';
           }
         </script>
       </head>
       <body>
-        <h1>${title}</h1>
-        <p>${description}</p>
-        <p>Loading quiz... If you are not redirected, <a href="${redirectPath}">click here</a>.</p>
+        <header class="header-container">
+          <h1 class="logo-title">${escapeHtml(title)}</h1>
+          <p class="subtitle">${escapeHtml(description)}</p>
+          <button class="play-btn" onclick="playQuiz()">🎮 Gioca a questo Quiz!</button>
+        </header>
+
+        <main class="main-container">
+          <h2 class="section-title">Domande e Categorie del Quiz</h2>
+          <div class="grid-categories">
+            ${categories.map(cat => `
+              <article class="category-card">
+                <h3 class="category-header">${escapeHtml(cat.title)}</h3>
+                <ul class="questions-list">
+                  ${(cat.questions || []).map(q => `
+                    <li class="question-item">
+                      <span class="points-tag">${q.points} Punti</span>
+                      <div class="q-text"><strong>Domanda:</strong> ${escapeHtml(q.text)}</div>
+                      <div class="a-text"><strong>Risposta:</strong> ${escapeHtml(q.answer)}</div>
+                    </li>
+                  `).join('')}
+                </ul>
+              </article>
+            `).join('')}
+          </div>
+          <div style="text-align: center; margin-top: 2.5rem;">
+            <button class="play-btn" onclick="playQuiz()">🎮 Gioca Ora con le tue Squadre!</button>
+          </div>
+        </main>
+
+        <footer class="footer-info">
+          <p><a href="/">Home Page</a> | <a href="/quizzes">Esplora Tutti i Quiz</a></p>
+        </footer>
       </body>
     </html>`;
 
@@ -636,12 +791,148 @@ app.get('/quiz/:id', async (req, res) => {
   }
 });
 
+// Endpoint per mostrare tutti i quiz recentemente creati dagli utenti (SEO-friendly)
+app.get('/quizzes', async (req, res) => {
+  try {
+    let quizzes = [];
+    if (supabase) {
+      const { data, error } = await supabase
+        .from('quizzes')
+        .select('id, title, created_at')
+        .order('created_at', { ascending: false })
+        .limit(100);
+      if (!error && data) quizzes = data;
+    }
+
+    const html = `<!doctype html>
+    <html lang="it">
+      <head>
+        <meta charset="utf-8" />
+        <title>Esplora i Quiz degli Utenti - Jeopardy Online</title>
+        <meta name="description" content="Esplora la lista dei quiz creati dalla community di Jeopardy Online. Scegli un quiz e inizia subito a giocare con i tuoi amici!" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="https://jeopardyonline.it/quizzes" />
+        <style>
+          body {
+            margin: 0;
+            padding: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #091e42;
+            color: #ffffff;
+            min-height: 100vh;
+          }
+          .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 3rem 1rem;
+          }
+          h1 {
+            color: #facc15;
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+          }
+          p.sub {
+            text-align: center;
+            color: #93c5fd;
+            font-size: 1.1rem;
+            margin-bottom: 2.5rem;
+          }
+          .quiz-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+          }
+          .quiz-card {
+            background: rgba(255, 255, 255, 0.07);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 0.75rem;
+            padding: 1.25rem;
+            text-decoration: none;
+            color: #ffffff;
+            transition: transform 0.2s, border-color 0.2s;
+            display: flex;
+            flex-direction: column;
+            justify-between;
+          }
+          .quiz-card:hover {
+            transform: translateY(-3px);
+            border-color: #facc15;
+          }
+          .quiz-title {
+            color: #facc15;
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+          }
+          .quiz-date {
+            color: #60a5fa;
+            font-size: 0.85rem;
+          }
+          .back-link {
+            text-align: center;
+            margin-top: 3rem;
+          }
+          .back-link a {
+            color: #facc15;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.1rem;
+          }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <h1>Esplora i Quiz di Jeopardy Online</h1>
+          <p class="sub">Sfoglia la lista di quiz creati dagli utenti e metti alla prova le tue conoscenze!</p>
+          <div class="quiz-grid">
+            ${quizzes.map(q => `
+              <a href="/quiz/${q.id}" class="quiz-card">
+                <div class="quiz-title">${escapeHtml(q.title || 'Quiz senza titolo')}</div>
+                <div class="quiz-date">Creato il ${new Date(q.created_at).toLocaleDateString('it-IT')}</div>
+              </a>
+            `).join('')}
+          </div>
+          <div class="back-link">
+            <a href="/">← Torna alla Home Page</a>
+          </div>
+        </div>
+      </body>
+    </html>`;
+
+    res.set('Content-Type', 'text/html');
+    res.send(html);
+  } catch (error) {
+    console.error('Errore nella pagina /quizzes:', error);
+    res.status(500).send('Errore interno');
+  }
+});
+
+// Endpoint API per restituire i quiz recenti in JSON (per la landing page React)
+app.get('/api/recent-quizzes', async (req, res) => {
+  try {
+    if (!supabase) return res.json([]);
+    const { data, error } = await supabase
+      .from('quizzes')
+      .select('id, title, created_at')
+      .order('created_at', { ascending: false })
+      .limit(30);
+    if (error) throw error;
+    res.json(data || []);
+  } catch (err) {
+    console.error('Error fetching recent quizzes API:', err);
+    res.json([]);
+  }
+});
+
 // Dynamic sitemap endpoint
 app.get('/sitemap.xml', async (req, res) => {
   try {
     // Base static pages
     const urls = [
       { loc: 'https://jeopardyonline.it/', priority: 1.0 },
+      { loc: 'https://jeopardyonline.it/quizzes', priority: 0.9 },
       { loc: 'https://jeopardyonline.it/en/', priority: 0.8 },
       { loc: 'https://jeopardyonline.it/it/', priority: 0.8 }
     ];

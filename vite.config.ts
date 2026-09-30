@@ -23,7 +23,14 @@ export default defineConfig(({ mode }) => {
     optimizeDeps: {
       exclude: ['lucide-react'],
     },
-    envDir: './',
+    server: {
+      proxy: {
+        '/api': {
+          target: 'https://jeopardy-b937.onrender.com',
+          changeOrigin: true
+        }
+      }
+    },
     resolve: {
       alias: {
         '@': path.resolve(__dirname, './src'),

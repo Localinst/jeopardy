@@ -23,7 +23,46 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartGame, onCreateAIGame }
   const [showSparkle, setShowSparkle] = useState(false);
   const [sparkleCount, setSparkleCount] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
+  const [recentQuizzes, setRecentQuizzes] = useState<Array<{ id: string; title: string; created_at: string }>>([]);
   const { t, i18n } = useTranslation();
+
+  useEffect(() => {
+    const fetchQuizzes = async () => {
+      try {
+        let res = await fetch('/api/recent-quizzes');
+        if (!res.ok) {
+          res = await fetch('https://jeopardy-b937.onrender.com/api/recent-quizzes');
+        }
+        if (res.ok) {
+          const data = await res.json();
+          if (Array.isArray(data) && data.length > 0) {
+            setRecentQuizzes(data);
+            return;
+          }
+        }
+      } catch (e) {}
+
+      // Fallback: Parse live sitemap XML if /api/recent-quizzes is not deployed on Render yet
+      try {
+        const smRes = await fetch('https://jeopardy-b937.onrender.com/sitemap.xml');
+        if (smRes.ok) {
+          const text = await smRes.text();
+          const matches = [...text.matchAll(/\/quiz\/([a-f0-9-]+)/gi)];
+          if (matches.length > 0) {
+            // Deduplicate IDs
+            const uniqueIds = Array.from(new Set(matches.map(m => m[1])));
+            const parsed = uniqueIds.map((id, idx) => ({
+              id,
+              title: `Quiz Community #${uniqueIds.length - idx}`,
+              created_at: new Date().toISOString()
+            }));
+            setRecentQuizzes(parsed);
+          }
+        }
+      } catch (e) {}
+    };
+    fetchQuizzes();
+  }, []);
 
   const changeLanguage = (lng: string) => {
     i18n.changeLanguage(lng);
@@ -274,6 +313,44 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStartGame, onCreateAIGame }
             </div>
           </div>
         </section>
+
+        {/* Community Quizzes Section (SEO & Internal Linking) */}
+        {recentQuizzes.length > 0 && (
+          <section className="max-w-5xl mx-auto px-4 py-16 mb-20">
+            <h2 className="text-4xl font-bold text-center mb-4 text-white">
+              Quiz creati dalla <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-yellow-500">Community</span>
+            </h2>
+            <p className="text-center text-gray-300 mb-12 max-w-2xl mx-auto">
+              Esplora i quiz più recenti generati dagli utenti e gioca subito con le tue squadre!
+            </p>
+            
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {recentQuizzes.slice(0, 12).map((quiz) => (
+                <a
+                  key={quiz.id}
+                  href={`/quiz/${quiz.id}`}
+                  className="group relative bg-white/5 backdrop-blur-sm p-6 rounded-xl border border-white/10 hover:border-yellow-300/40 transition-all duration-300 hover:bg-white/10 hover:-translate-y-1 block text-left"
+                >
+                  <div className="text-yellow-400 font-bold text-lg mb-2 group-hover:text-yellow-300 line-clamp-2">
+                    {quiz.title}
+                  </div>
+                  <div className="text-xs text-blue-300 mt-2">
+                    Creato il {new Date(quiz.created_at).toLocaleDateString('it-IT')}
+                  </div>
+                </a>
+              ))}
+            </div>
+
+            <div className="text-center mt-10">
+              <a
+                href="/quizzes"
+                className="inline-block px-6 py-3 bg-blue-800/60 hover:bg-blue-700/80 border border-blue-400/30 text-yellow-300 font-bold rounded-lg transition-all"
+              >
+                Esplora tutti i quiz ({recentQuizzes.length}+) →
+              </a>
+            </div>
+          </section>
+        )}
 
         {/* FAQ Section */}
         <section className="max-w-5xl mx-auto px-4 py-16 mb-20">

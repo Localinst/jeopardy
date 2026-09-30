@@ -21,13 +21,18 @@
   status = 200
   force = true
 
-# Serve SPA for quiz pages so the app always mounts (no static HTML from backend)
+[[redirects]]
+  from = "/quizzes"
+  to = "https://jeopardy-b937.onrender.com/quizzes"
+  status = 200
+  force = true
+
+# Serve dynamic SEO pages for quiz URLs from backend
 [[redirects]]
   from = "/quiz/:id"
   to = "https://jeopardy-b937.onrender.com/quiz/:id"
-
   status = 200
-  force = false
+  force = true
 
 [[redirects]]
   # Serve the static English landing only at the exact /en root
