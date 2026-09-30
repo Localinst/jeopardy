@@ -570,7 +570,7 @@ app.get('/quiz/:id', async (req, res) => {
     const title = quizData.title || 'Quiz Jeopardy';
     const description = `Gioca al quiz: ${title}. Contiene ${categories.length} categorie con domande su: ${categories.map(c => c.title).join(', ')}.`;
     
-    // Create a JSON-LD structured data for SEO
+    // Create a JSON-LD structured data for SEO including all questions & answers for crawlers
     const structuredData = {
       "@context": "https://schema.org",
       "@type": "EducationalQuiz",
@@ -582,6 +582,18 @@ app.get('/quiz/:id', async (req, res) => {
       "about": categories.map(cat => ({
         "@type": "Thing",
         "name": cat.title
+      })),
+      "hasPart": categories.map(cat => ({
+        "@type": "Quiz",
+        "name": cat.title,
+        "hasPart": (cat.questions || []).map(q => ({
+          "@type": "Question",
+          "name": q.text,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": q.answer
+          }
+        }))
       }))
     };
 
@@ -771,6 +783,25 @@ app.get('/quiz/:id', async (req, res) => {
               </article>
             `).join('')}
           </div>
+          
+          <!-- Sezione con tutte le domande e risposte leggibili dai motori di ricerca (nascosta visivamente agli umani) -->
+          <section class="seo-only-content" aria-hidden="true" style="display: none !important;">
+            <h2>Domande e Risposte del Quiz per Motori di Ricerca</h2>
+            ${categories.map(cat => `
+              <div>
+                <h3>${escapeHtml(cat.title)}</h3>
+                <ul>
+                  ${(cat.questions || []).map(q => `
+                    <li>
+                      <div><strong>Domanda (${q.points} punti):</strong> ${escapeHtml(q.text)}</div>
+                      <div><strong>Risposta:</strong> ${escapeHtml(q.answer)}</div>
+                    </li>
+                  `).join('')}
+                </ul>
+              </div>
+            `).join('')}
+          </section>
+
           <div style="text-align: center; margin-top: 2.5rem;">
             <button class="play-btn" onclick="playQuiz()">Inizia la Partita</button>
           </div>
