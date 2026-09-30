@@ -330,7 +330,7 @@ Regole importanti:
       
       const requestBody = {
        
-        "model": "mistralai/devstral-2512:free",
+        "model": "nvidia/nemotron-3-super-120b-a12b:free",
         "messages": [
           {
             "role": "system",
