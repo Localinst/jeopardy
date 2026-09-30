@@ -751,11 +751,11 @@ app.get('/quiz/:id', async (req, res) => {
         <header class="header-container">
           <h1 class="logo-title">${escapeHtml(title)}</h1>
           <p class="subtitle">${escapeHtml(description)}</p>
-          <button class="play-btn" onclick="playQuiz()">🎮 Gioca a questo Quiz!</button>
+          <button class="play-btn" onclick="playQuiz()">Gioca a questo Quiz</button>
         </header>
 
         <main class="main-container">
-          <h2 class="section-title">Domande e Categorie del Quiz</h2>
+          <h2 class="section-title">Categorie del Quiz</h2>
           <div class="grid-categories">
             ${categories.map(cat => `
               <article class="category-card">
@@ -764,8 +764,7 @@ app.get('/quiz/:id', async (req, res) => {
                   ${(cat.questions || []).map(q => `
                     <li class="question-item">
                       <span class="points-tag">${q.points} Punti</span>
-                      <div class="q-text"><strong>Domanda:</strong> ${escapeHtml(q.text)}</div>
-                      <div class="a-text"><strong>Risposta:</strong> ${escapeHtml(q.answer)}</div>
+                      <div class="q-text">Domanda da ${q.points} Punti</div>
                     </li>
                   `).join('')}
                 </ul>
@@ -773,7 +772,7 @@ app.get('/quiz/:id', async (req, res) => {
             `).join('')}
           </div>
           <div style="text-align: center; margin-top: 2.5rem;">
-            <button class="play-btn" onclick="playQuiz()">🎮 Gioca Ora con le tue Squadre!</button>
+            <button class="play-btn" onclick="playQuiz()">Inizia la Partita</button>
           </div>
         </main>
 
